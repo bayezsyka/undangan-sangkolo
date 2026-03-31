@@ -78,7 +78,7 @@ export default function Index({ auth, projects, filters, active_slots_count }) {
                             {projects.data.map((project) => (
                                 <tr key={project.id} className="group hover:bg-gray-50/50 transition-colors">
                                     <td className="px-6 py-4">
-                                        <Link href={route('projects.show', project)} className="font-bold text-gray-900 hover:text-indigo-600 transition-colors">{project.name_project}</Link>
+                                        <Link href={route('projects.show', project.id)} className="font-bold text-gray-900 hover:text-indigo-600 transition-colors">{project.name_project}</Link>
                                         <div className="text-[11px] text-gray-400 mt-0.5">{project.event_type} • {new Date(project.event_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
                                     </td>
                                     <td className="px-6 py-4">

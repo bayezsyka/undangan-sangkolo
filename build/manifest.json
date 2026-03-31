@@ -1,13 +1,13 @@
 {
-  "_UI-Gmfb8zYr.js": {
-    "file": "assets/UI-Gmfb8zYr.js",
+  "_UI-eIRQMvD_.js": {
+    "file": "assets/UI-eIRQMvD_.js",
     "name": "UI",
     "imports": [
       "resources/js/app.jsx"
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-BejXTZA1.css",
+    "file": "assets/app-GF4jvd7l.css",
     "name": "app",
     "names": [
       "app.css"
@@ -16,137 +16,137 @@
     "isEntry": true
   },
   "resources/js/Pages/Admin/Clients/Create.jsx": {
-    "file": "assets/Create-B-5IpzQ_.js",
+    "file": "assets/Create-BCT_pNTz.js",
     "name": "Create",
     "src": "resources/js/Pages/Admin/Clients/Create.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_UI-Gmfb8zYr.js"
+      "_UI-eIRQMvD_.js"
     ]
   },
   "resources/js/Pages/Admin/Clients/Index.jsx": {
-    "file": "assets/Index-Nvd5IUfM.js",
+    "file": "assets/Index--Odqruy_.js",
     "name": "Index",
     "src": "resources/js/Pages/Admin/Clients/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_UI-Gmfb8zYr.js"
+      "_UI-eIRQMvD_.js"
     ]
   },
   "resources/js/Pages/Admin/Dashboard.jsx": {
-    "file": "assets/Dashboard-BasfsbTd.js",
+    "file": "assets/Dashboard-DdY79Qcr.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Admin/Dashboard.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_UI-Gmfb8zYr.js"
+      "_UI-eIRQMvD_.js"
     ]
   },
   "resources/js/Pages/Admin/Projects/Create.jsx": {
-    "file": "assets/Create-DSEoduxt.js",
+    "file": "assets/Create-CzoxjwsI.js",
     "name": "Create",
     "src": "resources/js/Pages/Admin/Projects/Create.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_UI-Gmfb8zYr.js"
+      "_UI-eIRQMvD_.js"
     ]
   },
   "resources/js/Pages/Admin/Projects/Edit.jsx": {
-    "file": "assets/Edit-0PEQ-xBC.js",
+    "file": "assets/Edit-CRU9-Gw8.js",
     "name": "Edit",
     "src": "resources/js/Pages/Admin/Projects/Edit.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_UI-Gmfb8zYr.js"
+      "_UI-eIRQMvD_.js"
     ]
   },
   "resources/js/Pages/Admin/Projects/Guests/Index.jsx": {
-    "file": "assets/Index-DYN2AuCy.js",
+    "file": "assets/Index-CbRUNJpp.js",
     "name": "Index",
     "src": "resources/js/Pages/Admin/Projects/Guests/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_UI-Gmfb8zYr.js"
+      "_UI-eIRQMvD_.js"
     ]
   },
   "resources/js/Pages/Admin/Projects/Index.jsx": {
-    "file": "assets/Index-C8MgBE69.js",
+    "file": "assets/Index-BmQiCP4y.js",
     "name": "Index",
     "src": "resources/js/Pages/Admin/Projects/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_UI-Gmfb8zYr.js"
+      "_UI-eIRQMvD_.js"
     ]
   },
   "resources/js/Pages/Admin/Projects/Show.jsx": {
-    "file": "assets/Show-DMfw2dE2.js",
+    "file": "assets/Show-CFm3d6mc.js",
     "name": "Show",
     "src": "resources/js/Pages/Admin/Projects/Show.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_UI-Gmfb8zYr.js"
+      "_UI-eIRQMvD_.js"
     ]
   },
   "resources/js/Pages/Admin/RSVP/Index.jsx": {
-    "file": "assets/Index-BtiJbPnt.js",
+    "file": "assets/Index-Dp1EelC4.js",
     "name": "Index",
     "src": "resources/js/Pages/Admin/RSVP/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_UI-Gmfb8zYr.js"
+      "_UI-eIRQMvD_.js"
     ]
   },
   "resources/js/Pages/Admin/Settings/Index.jsx": {
-    "file": "assets/Index-CgAi3izX.js",
+    "file": "assets/Index-50mq2i5E.js",
     "name": "Index",
     "src": "resources/js/Pages/Admin/Settings/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_UI-Gmfb8zYr.js"
+      "_UI-eIRQMvD_.js"
     ]
   },
   "resources/js/Pages/Admin/Templates/Create.jsx": {
-    "file": "assets/Create-_j0HPABu.js",
+    "file": "assets/Create-TaTu7_WG.js",
     "name": "Create",
     "src": "resources/js/Pages/Admin/Templates/Create.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_UI-Gmfb8zYr.js"
+      "_UI-eIRQMvD_.js"
     ]
   },
   "resources/js/Pages/Admin/Templates/Edit.jsx": {
-    "file": "assets/Edit-Dz2fwHYA.js",
+    "file": "assets/Edit-BMBMYD5k.js",
     "name": "Edit",
     "src": "resources/js/Pages/Admin/Templates/Edit.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_UI-Gmfb8zYr.js"
+      "_UI-eIRQMvD_.js"
     ]
   },
   "resources/js/Pages/Admin/Templates/Index.jsx": {
-    "file": "assets/Index-C2sYtiJV.js",
+    "file": "assets/Index-KR_aeLKB.js",
     "name": "Index",
     "src": "resources/js/Pages/Admin/Templates/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_UI-Gmfb8zYr.js"
+      "_UI-eIRQMvD_.js"
     ]
   },
   "resources/js/Pages/Auth/Login.jsx": {
-    "file": "assets/Login-DfohynDq.js",
+    "file": "assets/Login-DsaMT5G8.js",
     "name": "Login",
     "src": "resources/js/Pages/Auth/Login.jsx",
     "isDynamicEntry": true,
@@ -155,7 +155,7 @@
     ]
   },
   "resources/js/Pages/Public/Invitation/Show.jsx": {
-    "file": "assets/Show-CMjFYzxf.js",
+    "file": "assets/Show-C5ZSmVez.js",
     "name": "Show",
     "src": "resources/js/Pages/Public/Invitation/Show.jsx",
     "isDynamicEntry": true,
@@ -164,7 +164,7 @@
     ]
   },
   "resources/js/Pages/Welcome.jsx": {
-    "file": "assets/Welcome-DgnabCpv.js",
+    "file": "assets/Welcome-CUbuytok.js",
     "name": "Welcome",
     "src": "resources/js/Pages/Welcome.jsx",
     "isDynamicEntry": true,
@@ -173,7 +173,7 @@
     ]
   },
   "resources/js/app.jsx": {
-    "file": "assets/app-rk7thlVY.js",
+    "file": "assets/app-CtDh8BmX.js",
     "name": "app",
     "src": "resources/js/app.jsx",
     "isEntry": true,
@@ -196,7 +196,7 @@
       "resources/js/Pages/Welcome.jsx"
     ],
     "css": [
-      "assets/app-BejXTZA1.css"
+      "assets/app-GF4jvd7l.css"
     ]
   }
 }

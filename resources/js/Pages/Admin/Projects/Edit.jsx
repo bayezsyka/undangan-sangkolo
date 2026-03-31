@@ -114,7 +114,7 @@ export default function Edit({ auth, project, clients, templates, active_slots_c
                                 Lihat Undangan
                             </a>
                         )}
-                        <Link href={route('projects.show', project)} className="text-sm font-bold text-gray-500 hover:text-gray-900 border border-transparent px-4 py-2.5 flex items-center gap-2 transition-all">
+                        <Link href={route('projects.show', project.id)} className="text-sm font-bold text-gray-500 hover:text-gray-900 border border-transparent px-4 py-2.5 flex items-center gap-2 transition-all">
                              Batal
                         </Link>
                     </div>

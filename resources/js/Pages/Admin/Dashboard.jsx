@@ -78,7 +78,7 @@ export default function Dashboard({ auth, stats, recent_projects, total_rsvps })
                                     {recent_projects.length > 0 ? recent_projects.map((project) => (
                                         <tr key={project.id} className="group hover:bg-gray-50/50 transition-all cursor-pointer">
                                             <td className="px-6 py-4">
-                                                <Link href={route('projects.show', project)} className="block">
+                                                <Link href={route('projects.show', project.id)} className="block">
                                                     <div className="font-bold text-gray-900 leading-tight group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{project.name_project}</div>
                                                     <div className="text-[11px] text-gray-400 mt-0.5">{project.client.name} • {project.event_type}</div>
                                                 </Link>
