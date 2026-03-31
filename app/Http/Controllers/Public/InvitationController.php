@@ -12,7 +12,6 @@ class InvitationController extends Controller
     public function show($slug, $guest_code = null)
     {
         $invitation = Invitation::where('slug', $slug)
-            ->where('is_published', true)
             ->with([
                 'template', 
                 'schedules', 
@@ -28,10 +27,16 @@ class InvitationController extends Controller
             ])
             ->firstOrFail();
 
+        // Security: Only allow public to view if published. Admin can preview anytime.
+        if (!$invitation->is_published && !auth()->check()) {
+            abort(404, 'Undangan ini masih dalam tahap pengerjaan.');
+        }
+
         $guest = null;
         if ($guest_code) {
             $guest = InvitationGuest::where('invitation_id', $invitation->id)
                 ->where('guest_code', $guest_code)
+                ->with(['rsvp', 'message'])
                 ->first();
                 
             if (!$guest) abort(404, 'Tautan undangan tidak valid atau sudah kadaluarsa.');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class ClientController extends Controller
@@ -30,6 +31,7 @@ class ClientController extends Controller
             'notes' => 'nullable|string',
         ]);
 
+        $validated['slug'] = Str::slug($validated['name']) . '-' . rand(100, 999);
         Client::create($validated);
 
         return redirect()->route('clients.index')->with('success', 'Client berhasil ditambahkan.');
@@ -50,6 +52,10 @@ class ClientController extends Controller
             'email' => 'nullable|email|max:255|unique:clients,email,' . $client->id,
             'notes' => 'nullable|string',
         ]);
+
+        if ($client->name !== $validated['name']) {
+            $validated['slug'] = Str::slug($validated['name']) . '-' . rand(100, 999);
+        }
 
         $client->update($validated);
 

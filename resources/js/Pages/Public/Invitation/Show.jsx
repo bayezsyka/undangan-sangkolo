@@ -158,37 +158,40 @@ export default function Show({ invitation, guest }) {
                         </section>
                     )}
 
-                    {/* EVENTS / SCHEDULES */}
-                    <section className="py-32 px-10 bg-white">
-                        <div className="text-center mb-20">
-                            <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-neutral-400 mb-2">Our Wedding</h4>
-                            <h2 className="text-3xl font-black text-neutral-900 tracking-tighter">Event Schedule</h2>
-                        </div>
-                        <div className="space-y-12">
-                            {schedules.map((item, idx) => (
-                                <div key={idx} className="relative p-10 bg-neutral-50 rounded-[40px] space-y-6 group hover:bg-neutral-900 hover:text-white transition-all duration-500">
-                                     <div className="flex justify-between items-start">
-                                         <div className="space-y-1">
-                                             <h5 className="text-xl font-black tracking-tight">{item.title}</h5>
-                                             <p className="text-[10px] font-black uppercase tracking-widest opacity-60">
-                                                {new Date(item.date).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-                                             </p>
+                    {/* SCHEDULES */}
+                    {schedules.length > 0 && (
+                        <section className="py-32 px-10 bg-white">
+                            <div className="text-center mb-16 space-y-2">
+                                <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-neutral-400">The Events</h4>
+                                <h2 className="text-3xl font-black text-neutral-900 tracking-tighter">Susunan Acara</h2>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                                {schedules.map((item, i) => (
+                                    <div key={i} className="group p-8 lg:p-12 rounded-[50px] bg-neutral-50 hover:bg-neutral-900 hover:text-white transition-all duration-700 border border-neutral-100 flex flex-col justify-between">
+                                         <div className="space-y-6">
+                                              <div className="flex justify-between items-start">
+                                                  <h3 className="text-xl font-black uppercase tracking-tight max-w-[150px]">{item.title}</h3>
+                                                  <span className="text-[10px] font-black bg-white/10 px-3 py-1.5 rounded-full border border-neutral-200 group-hover:border-white/20">{item.start_time || 'TBA'}</span>
+                                              </div>
+                                              <div className="pt-4 border-t border-neutral-200/50">
+                                                  <p className="text-xs font-black uppercase tracking-widest opacity-40 mb-1">Tanggal</p>
+                                                  <p className="text-sm font-black">{new Date(item.date).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                                              </div>
                                          </div>
-                                         <span className="text-[10px] font-black bg-white group-hover:bg-neutral-800 text-neutral-900 group-hover:text-white border px-4 py-1.5 rounded-full uppercase tracking-widest transition-all">
-                                             {item.start_time.substring(0, 5)} - {item.end_time ? item.end_time.substring(0, 5) : 'Selesai'}
-                                         </span>
-                                     </div>
-                                     <div className="space-y-2">
-                                         <p className="text-sm font-black">{item.location_name}</p>
-                                         <p className="text-xs font-medium opacity-60 leading-relaxed">{item.address}</p>
-                                     </div>
-                                     {item.maps_url && (
-                                         <a href={item.maps_url} target="_blank" className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest underline underline-offset-4 pt-4 group-hover:text-indigo-400">View Map</a>
-                                     )}
-                                </div>
-                            ))}
-                        </div>
-                    </section>
+                                         <div className="pt-10 space-y-4">
+                                              <div className="space-y-2">
+                                                  <p className="text-sm font-black">{item.location_name}</p>
+                                                  <p className="text-xs font-medium opacity-60 leading-relaxed">{item.address}</p>
+                                              </div>
+                                              {item.maps_url && (
+                                                  <a href={item.maps_url} target="_blank" className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest underline underline-offset-4 pt-4 group-hover:text-indigo-400">View Map</a>
+                                              )}
+                                         </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
 
                     {/* GALLERY */}
                     {galleries.length > 0 && (
@@ -298,16 +301,15 @@ function GiftCard({ gift }) {
 function RsvpSection({ slug, guest }) {
     const { data, setData, post, processing, reset, recentlySuccessful } = useForm({
         name: guest?.name || '',
-        attendance_status: 'attending',
-        guest_count: 1,
-        notes: '',
+        attendance_status: guest?.rsvp?.attendance_status || 'attending',
+        guest_count: guest?.rsvp?.guest_count || 1,
+        notes: guest?.rsvp?.notes || '',
         invitation_guest_id: guest?.id || null
     });
 
     const submit = (e) => {
         e.preventDefault();
         post(route('invitation.rsvp', slug), {
-            onSuccess: () => reset(),
             preserveScroll: true
         });
     };
@@ -322,7 +324,7 @@ function RsvpSection({ slug, guest }) {
              </div>
 
              {recentlySuccessful ? (
-                 <div className="py-20 text-center font-black animate-pulse text-rose-400">Terima Kasih! Konfirmasi Anda Sudah Terkirim.</div>
+                 <div className="py-20 text-center font-black animate-pulse text-rose-400 uppercase tracking-widest">✨ Konfirmasi Anda Berhasil Disimpan</div>
              ) : (
                 <form onSubmit={submit} className="space-y-4 relative z-10">
                     <input 
@@ -334,24 +336,28 @@ function RsvpSection({ slug, guest }) {
                         required
                         disabled={!!guest}
                     />
-                    <div className="grid grid-cols-2 gap-4">
-                        <select 
-                            value={data.attendance_status}
-                            onChange={e => setData('attendance_status', e.target.value)}
-                            className="p-5 rounded-3xl bg-white/10 border border-white/5 font-black text-xs uppercase tracking-widest outline-none appearance-none"
+                    <div className="flex gap-3">
+                        <button 
+                            type="button"
+                            onClick={() => setData('attendance_status', 'attending')}
+                            className={`flex-1 p-5 rounded-[28px] border transition-all text-[10px] font-black uppercase tracking-widest ${data.attendance_status === 'attending' ? 'bg-white text-neutral-900 border-white shadow-xl shadow-white/10 scale-[1.02]' : 'bg-white/5 text-white/50 border-white/5 hover:bg-white/10'}`}
                         >
-                            <option value="attending" className="text-black">Hadir</option>
-                            <option value="maybe" className="text-black">Ragu</option>
-                            <option value="not_attending" className="text-black">Tidak Hadir</option>
-                        </select>
-                        <input 
-                            type="number" 
-                            placeholder="Jumlah"
-                            value={data.guest_count}
-                            onChange={e => setData('guest_count', e.target.value)}
-                            className="p-5 rounded-3xl bg-white/10 border border-white/5 outline-none font-bold text-sm"
-                            min="1" max="10"
-                        />
+                            Hadir
+                        </button>
+                        <button 
+                            type="button"
+                            onClick={() => setData('attendance_status', 'maybe')}
+                            className={`flex-1 p-5 rounded-[28px] border transition-all text-[10px] font-black uppercase tracking-widest ${data.attendance_status === 'maybe' ? 'bg-white text-neutral-900 border-white shadow-xl shadow-white/10 scale-[1.02]' : 'bg-white/5 text-white/50 border-white/5 hover:bg-white/10'}`}
+                        >
+                            Ragu
+                        </button>
+                        <button 
+                            type="button"
+                            onClick={() => setData('attendance_status', 'not_attending')}
+                            className={`flex-1 p-5 rounded-[28px] border transition-all text-[10px] font-black uppercase tracking-widest ${data.attendance_status === 'not_attending' ? 'bg-white text-neutral-900 border-white shadow-xl shadow-white/10 scale-[1.02]' : 'bg-white/5 text-white/50 border-white/5 hover:bg-white/10'}`}
+                        >
+                            Tidak
+                        </button>
                     </div>
                     <textarea 
                         placeholder="Ucapan tambahan (opsional)"
@@ -363,7 +369,7 @@ function RsvpSection({ slug, guest }) {
                         disabled={processing}
                         className="w-full bg-white text-neutral-900 font-black py-5 px-6 rounded-3xl text-[10px] uppercase tracking-[0.2em] shadow-2xl active:scale-[0.98] transition-all hover:bg-neutral-100"
                     >
-                        Kirim Konfirmasi
+                        {guest?.rsvp ? 'Update Konfirmasi' : 'Kirim Konfirmasi'}
                     </button>
                 </form>
              )}
@@ -374,16 +380,13 @@ function RsvpSection({ slug, guest }) {
 function WishesSection({ slug, messages, guest }) {
     const { data, setData, post, processing, reset, recentlySuccessful } = useForm({
         name: guest?.name || '',
-        message: '',
+        message: guest?.message?.message || '',
         invitation_guest_id: guest?.id || null
     });
 
     const submit = (e) => {
         e.preventDefault();
         post(route('invitation.message', slug), {
-            onSuccess: (p) => {
-                reset('message');
-            },
             preserveScroll: true
         });
     };
@@ -396,7 +399,7 @@ function WishesSection({ slug, messages, guest }) {
              </div>
              
              {recentlySuccessful ? (
-                  <div className="p-10 rounded-[40px] bg-emerald-50 text-emerald-800 text-center font-black animate-in zoom-in duration-500">Ucapan Anda Sudah Terkirim! ✨</div>
+                  <div className="p-10 rounded-[40px] bg-emerald-50 text-emerald-800 text-center font-black animate-in zoom-in duration-500 uppercase tracking-widest text-[10px]">Ucapan Anda Sudah Terkirim! ✨</div>
              ) : (
                 <form onSubmit={submit} className="space-y-4 p-8 rounded-[40px] border border-neutral-100 bg-neutral-50 shadow-sm">
                     <input 
@@ -419,14 +422,17 @@ function WishesSection({ slug, messages, guest }) {
                         disabled={processing}
                         className="w-full bg-neutral-900 text-white font-black py-4 px-6 rounded-2xl text-[10px] uppercase tracking-widest shadow-xl active:scale-[0.98] transition-all"
                     >
-                        Save Wishes
+                        {guest?.message ? 'Update Wishes' : 'Save Wishes'}
                     </button>
                 </form>
              )}
 
              <div className="space-y-6 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                 {messages.length > 0 ? messages.map((m, i) => (
-                    <div key={m.id || i} className="p-8 rounded-[40px] bg-white space-y-4 border border-neutral-100 hover:shadow-lg transition-all duration-500">
+                    <div key={m.id || i} className={`p-8 rounded-[40px] bg-white space-y-4 border ${m.invitation_guest_id === guest?.id ? 'border-indigo-200 ring-4 ring-indigo-50 shadow-xl' : 'border-neutral-100'} hover:shadow-lg transition-all duration-500 relative`}>
+                        {m.invitation_guest_id === guest?.id && (
+                            <span className="absolute top-6 right-8 bg-indigo-600 text-white text-[8px] font-black px-3 py-1 rounded-full uppercase tracking-widest">YOU</span>
+                        )}
                         <div className="flex items-center gap-3">
                              <div className="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center text-[10px] font-black text-neutral-900 uppercase">{m.name.charAt(0)}</div>
                              <div>

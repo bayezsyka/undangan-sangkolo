@@ -50,8 +50,8 @@ export default function Index({ auth, clients }) {
                                         <span className="text-[10px] font-black bg-gray-100 px-3 py-1.5 rounded-full text-gray-500">{client.projects_count} Project</span>
                                     </td>
                                     <td className="px-6 py-4 text-right space-x-2">
-                                        <Link href={route('clients.edit', client.id)} className="text-[9px] font-black uppercase text-indigo-600 hover:underline">Edit</Link>
-                                        <button onClick={() => destroy(client.id)} className="text-[9px] font-black uppercase text-rose-500 hover:underline">Hapus</button>
+                                        <Link href={route('clients.edit', client)} className="text-[9px] font-black uppercase text-indigo-600 hover:underline">Edit</Link>
+                                        <button onClick={() => destroy(client.slug)} className="text-[9px] font-black uppercase text-rose-500 hover:underline">Hapus</button>
                                     </td>
                                 </tr>
                             ))}

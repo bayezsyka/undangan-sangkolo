@@ -20,20 +20,23 @@ class InteractionController extends Controller
             'attendance_status' => 'required|in:attending,maybe,not_attending',
             'guest_count' => 'required|integer|min:1|max:10',
             'notes' => 'nullable|string|max:500',
-            'invitation_guest_id' => 'nullable|exists:invitation_guests,id',
+            'invitation_guest_id' => 'required|exists:invitation_guests,id',
         ]);
 
         // Security: Ensure guest belongs to this invitation
-        if (!empty($validated['invitation_guest_id'])) {
-            $check = InvitationGuest::where('id', $validated['invitation_guest_id'])
-                ->where('invitation_id', $invitation->id)
-                ->exists();
-            if (!$check) unset($validated['invitation_guest_id']);
-        }
+        $guest = InvitationGuest::where('id', $validated['invitation_guest_id'])
+            ->where('invitation_id', $invitation->id)
+            ->firstOrFail();
+        
+        // Paten: Always use verified name
+        $validated['name'] = $guest->name;
 
-        $invitation->rsvps()->create($validated);
+        $invitation->rsvps()->updateOrCreate(
+            ['invitation_guest_id' => $guest->id],
+            $validated
+        );
 
-        return back()->with('success', 'Konfirmasi kehadiran berhasil dikirim.');
+        return back()->with('success', 'Konfirmasi kehadiran berhasil disimpan.');
     }
 
     public function message(Request $request, $slug)
@@ -44,22 +47,25 @@ class InteractionController extends Controller
             'name' => 'required|string|max:255',
             'relation' => 'nullable|string|max:100',
             'message' => 'required|string|max:1000',
-            'invitation_guest_id' => 'nullable|exists:invitation_guests,id',
+            'invitation_guest_id' => 'required|exists:invitation_guests,id',
         ]);
 
         // Security: Ensure guest belongs to this invitation
-        if (!empty($validated['invitation_guest_id'])) {
-            $check = InvitationGuest::where('id', $validated['invitation_guest_id'])
-                ->where('invitation_id', $invitation->id)
-                ->exists();
-            if (!$check) unset($validated['invitation_guest_id']);
-        }
+        $guest = InvitationGuest::where('id', $validated['invitation_guest_id'])
+            ->where('invitation_id', $invitation->id)
+            ->firstOrFail();
 
-        $invitation->guestMessages()->create([
-            ...$validated,
-            'is_approved' => true,
-        ]);
+        // Paten: Always use verified name
+        $validated['name'] = $guest->name;
 
-        return back()->with('success', 'Ucapan doa berhasil dikirim.');
+        $invitation->guestMessages()->updateOrCreate(
+            ['invitation_guest_id' => $guest->id],
+            [
+                ...$validated,
+                'is_approved' => true,
+            ]
+        );
+
+        return back()->with('success', 'Ucapan doa berhasil disimpan.');
     }
 }

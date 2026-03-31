@@ -57,7 +57,7 @@ export default function Edit({ auth, project, clients, templates, active_slots_c
 
     const submit = (e) => {
         e.preventDefault();
-        put(route('projects.update', project.id));
+        put(route('projects.update', project));
     };
 
     const handleInviteChange = (field, value) => {
@@ -114,7 +114,7 @@ export default function Edit({ auth, project, clients, templates, active_slots_c
                                 Lihat Undangan
                             </a>
                         )}
-                        <Link href={route('projects.show', project.id)} className="text-sm font-bold text-gray-500 hover:text-gray-900 border border-transparent px-4 py-2.5 flex items-center gap-2 transition-all">
+                        <Link href={route('projects.show', project)} className="text-sm font-bold text-gray-500 hover:text-gray-900 border border-transparent px-4 py-2.5 flex items-center gap-2 transition-all">
                              Batal
                         </Link>
                     </div>
@@ -296,18 +296,26 @@ export default function Edit({ auth, project, clients, templates, active_slots_c
                                         </div>
                                     </FormGroup>
                                     <FormGroup label="Labels / Quotes" span={2}>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <textarea rows="3" placeholder="Quotes pembuka..." value={data.invitation.opening_quote} onChange={e => handleInviteChange('opening_quote', e.target.value)} className="w-full input-premium text-xs" />
-                                            <textarea rows="3" placeholder="Closing note..." value={data.invitation.closing_note} onChange={e => handleInviteChange('closing_note', e.target.value)} className="w-full input-premium text-xs" />
-                                        </div>
-                                    </FormGroup>
-                                    <FormGroup label="Status Publikasi">
-                                        <label className="flex items-center gap-4 cursor-pointer">
-                                            <input type="checkbox" className="sr-only peer" checked={data.invitation.is_published} onChange={e => handleInviteChange('is_published', e.target.checked)} />
-                                            <div className="w-12 h-7 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                                            <span className="text-xs font-black uppercase tracking-widest text-gray-500">{data.invitation.is_published ? 'Published' : 'Draft'}</span>
-                                        </label>
-                                    </FormGroup>
+                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                             <textarea rows="3" placeholder="Quotes pembuka (e.g. QS. Ar-rum)..." value={data.invitation.opening_quote} onChange={e => handleInviteChange('opening_quote', e.target.value)} className="w-full input-premium text-xs" />
+                                             <textarea rows="3" placeholder="Ucapan penutup / terima kasih..." value={data.invitation.closing_note} onChange={e => handleInviteChange('closing_note', e.target.value)} className="w-full input-premium text-xs" />
+                                         </div>
+                                     </FormGroup>
+                                     <FormGroup label="Status Visibilitas" span={2}>
+                                         <div className={`p-6 rounded-3xl border transition-all flex items-center justify-between ${data.invitation.is_published ? 'bg-emerald-50 border-emerald-100' : 'bg-amber-50 border-amber-100'}`}>
+                                              <div className="space-y-1">
+                                                  <p className={`text-sm font-black ${data.invitation.is_published ? 'text-emerald-900' : 'text-amber-900'}`}>{data.invitation.is_published ? 'LIVE: Undangan Sudah Terbit' : 'DRAFT: Masih Tahap Pengerjaan'}</p>
+                                                  <p className="text-[10px] font-medium opacity-60">Kontrol visibilitas undangan di sisi publik.</p>
+                                              </div>
+                                              <button 
+                                                 type="button"
+                                                 onClick={() => handleInviteChange('is_published', !data.invitation.is_published)}
+                                                 className={`w-14 h-8 rounded-full relative transition-colors ${data.invitation.is_published ? 'bg-emerald-500' : 'bg-amber-400'}`}
+                                              >
+                                                  <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform ${data.invitation.is_published ? 'translate-x-6' : ''}`}></div>
+                                              </button>
+                                         </div>
+                                     </FormGroup>
                                 </div>
                              </SectionCard>
                         </div>

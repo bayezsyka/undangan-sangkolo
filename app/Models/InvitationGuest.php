@@ -19,4 +19,14 @@ class InvitationGuest extends Model
     {
         return $this->belongsTo(Invitation::class);
     }
+
+    public function rsvp()
+    {
+        return $this->hasOne(Rsvp::class, 'invitation_guest_id');
+    }
+
+    public function message()
+    {
+        return $this->hasOne(GuestMessage::class, 'invitation_guest_id');
+    }
 }

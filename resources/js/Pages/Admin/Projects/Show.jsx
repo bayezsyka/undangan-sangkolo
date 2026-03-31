@@ -22,7 +22,7 @@ export default function Show({ auth, project, stats, checklist, is_ready_to_publ
                 subtitle={`Pusat kerja strategis untuk ${project.name_project}`}
                 actions={
                     <div className="flex gap-3">
-                        <Link href={route('projects.edit', project.id)} className="bg-indigo-600 hover:bg-indigo-700 text-white font-black py-2.5 px-8 rounded-xl shadow-lg shadow-indigo-100 transition-all active:scale-[0.98] text-sm flex items-center gap-2 uppercase tracking-widest">
+                        <Link href={route('projects.edit', project)} className="bg-indigo-600 hover:bg-indigo-700 text-white font-black py-2.5 px-8 rounded-xl shadow-lg shadow-indigo-100 transition-all active:scale-[0.98] text-sm flex items-center gap-2 uppercase tracking-widest">
                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                              Editor Konten
                         </Link>
@@ -72,8 +72,8 @@ export default function Show({ auth, project, stats, checklist, is_ready_to_publ
                      </div>
 
                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                          <StatCard label="Total Tamu" value={stats.guests_count} unit="Tamu" color="amber" />
-                          <StatCard label="Hadir (RSVP)" value={stats.attending_total} unit="Pax" color="emerald" />
+                          <StatCard label="Total Tamu" value={stats.guests_count} unit="Tamu" color="amber" link={route('projects.guests.index', project.slug)} />
+                          <StatCard label="Hadir (RSVP)" value={stats.attending_total} unit="Tamu" color="emerald" />
                           <StatCard label="Wishes Received" value={invite?.guest_messages?.length || 0} unit="Pesan" color="indigo" />
                      </div>
 
@@ -85,7 +85,6 @@ export default function Show({ auth, project, stats, checklist, is_ready_to_publ
                                     <tr className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-50">
                                         <th className="px-6 py-4">Tamu</th>
                                         <th className="px-6 py-4">Status</th>
-                                        <th className="px-6 py-4">Pax</th>
                                         <th className="px-6 py-4">Catatan</th>
                                     </tr>
                                 </thead>
@@ -99,11 +98,10 @@ export default function Show({ auth, project, stats, checklist, is_ready_to_publ
                                                     type={rsvp.attendance_status === 'attending' ? 'success' : (rsvp.attendance_status === 'maybe' ? 'warning' : 'default')} 
                                                 />
                                             </td>
-                                            <td className="px-6 py-4 font-black">{rsvp.guest_count}</td>
                                             <td className="px-6 py-4 text-gray-400 italic text-[11px] font-medium">{rsvp.notes || '-'}</td>
                                         </tr>
                                     )) : (
-                                        <tr><td colSpan="4" className="px-6 py-12 text-center text-gray-400 italic">Belum ada respon RSVP untuk project ini.</td></tr>
+                                        <tr><td colSpan="3" className="px-6 py-12 text-center text-gray-400 italic">Belum ada respon RSVP untuk project ini.</td></tr>
                                     )}
                                 </tbody>
                             </table>
@@ -165,7 +163,12 @@ export default function Show({ auth, project, stats, checklist, is_ready_to_publ
                                  </p>
                             </div>
 
-                            <Link href={route('projects.edit', project.id)} className={`w-full font-black py-4 px-6 rounded-[24px] transition-all shadow-xl flex items-center justify-center gap-3 text-[10px] uppercase tracking-widest ${invite?.is_published ? 'bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-100' : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-100'}`}>
+                            <Link 
+                                href={route('projects.publish', project)} 
+                                method="post"
+                                as="button"
+                                className={`w-full font-black py-4 px-6 rounded-[24px] transition-all shadow-xl flex items-center justify-center gap-3 text-[10px] uppercase tracking-widest ${invite?.is_published ? 'bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-100' : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-100'}`}
+                            >
                                  {invite?.is_published ? 'Unpublish Undangan' : 'Sempurnakan & Publish'}
                             </Link>
                         </div>

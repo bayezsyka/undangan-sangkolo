@@ -10,7 +10,12 @@ class Client extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'whatsapp', 'email', 'notes'];
+    protected $fillable = ['name', 'slug', 'whatsapp', 'email', 'notes'];
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 
     public function leads(): HasMany
     {

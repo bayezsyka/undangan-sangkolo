@@ -5,7 +5,7 @@ import { PageHeader, SectionCard, StatusBadge } from '@/Components/UI';
 
 export default function Index({ auth, templates }) {
     const toggleActive = (template) => {
-        router.put(route('templates.update', template.id), {
+        router.put(route('templates.update', template), {
             ...template,
             is_active: !template.is_active
         }, { preserveScroll: true });
@@ -63,10 +63,10 @@ export default function Index({ auth, templates }) {
                             </p>
                             <div className="flex items-center gap-3 pt-6 border-t border-gray-50">
                                 <Link 
-                                    href={route('templates.edit', template.id)}
-                                    className="flex-1 bg-white hover:bg-gray-50 text-gray-500 hover:text-gray-900 border border-gray-100 font-bold py-3 px-4 rounded-xl text-center text-[10px] transition-all uppercase tracking-[0.15em]"
+                                    href={route('templates.edit', template)} 
+                                    className="flex-1 bg-gray-900 border border-neutral-100 hover:bg-black text-white font-black py-3 px-6 rounded-xl text-center text-[10px] transition-all uppercase tracking-[0.2em] shadow-lg shadow-neutral-100/50"
                                 >
-                                    Konfigurasi
+                                    EDIT INFO
                                 </Link>
                                 <a 
                                     href={template.preview_url} 

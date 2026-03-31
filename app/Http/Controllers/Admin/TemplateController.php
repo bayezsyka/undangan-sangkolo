@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Template;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class TemplateController extends Controller
@@ -33,6 +34,7 @@ class TemplateController extends Controller
             'is_active' => 'required|boolean',
         ]);
 
+        $validated['slug'] = Str::slug($validated['name']);
         Template::create($validated);
 
         return redirect()->route('templates.index')->with('success', 'Template berhasil ditambahkan.');
@@ -56,6 +58,10 @@ class TemplateController extends Controller
             'default_settings' => 'nullable|array',
             'is_active' => 'required|boolean',
         ]);
+
+        if ($template->name !== $validated['name']) {
+            $validated['slug'] = Str::slug($validated['name']);
+        }
 
         $template->update($validated);
 

@@ -77,9 +77,11 @@ export default function Dashboard({ auth, stats, recent_projects, total_rsvps })
                                 <tbody className="divide-y divide-gray-50">
                                     {recent_projects.length > 0 ? recent_projects.map((project) => (
                                         <tr key={project.id} className="group hover:bg-gray-50/50 transition-all cursor-pointer">
-                                            <td className="px-6 py-4" onClick={() => window.location.href = route('projects.show', project.id)}>
-                                                <div className="font-bold text-gray-900 leading-tight group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{project.name_project}</div>
-                                                <div className="text-[11px] text-gray-400 mt-0.5">{project.client.name} • {project.event_type}</div>
+                                            <td className="px-6 py-4">
+                                                <Link href={route('projects.show', project)} className="block">
+                                                    <div className="font-bold text-gray-900 leading-tight group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{project.name_project}</div>
+                                                    <div className="text-[11px] text-gray-400 mt-0.5">{project.client.name} • {project.event_type}</div>
+                                                </Link>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <StatusBadge 
@@ -88,7 +90,7 @@ export default function Dashboard({ auth, stats, recent_projects, total_rsvps })
                                                 />
                                             </td>
                                             <td className="px-6 py-4 text-right">
-                                                <Link href={route('projects.edit', project.id)} className="text-[8px] font-black uppercase tracking-widest bg-gray-100 px-3 py-1.5 rounded-lg text-gray-500 hover:bg-indigo-600 hover:text-white transition-all">Editor</Link>
+                                                <Link href={route('projects.edit', project)} className="text-[8px] font-black uppercase tracking-widest bg-gray-100 px-3 py-1.5 rounded-lg text-gray-500 hover:bg-indigo-600 hover:text-white transition-all">Editor</Link>
                                             </td>
                                         </tr>
                                     )) : (

@@ -64,6 +64,7 @@ class ProjectController extends Controller
             }
         }
 
+        $validated['slug'] = Str::slug($validated['name_project']) . '-' . rand(10, 99);
         Project::create($validated);
 
         return redirect()->route('projects.index')->with('success', 'Project berhasil dibuat.');
@@ -78,14 +79,21 @@ class ProjectController extends Controller
             'invitation.giftAccounts', 
             'invitation.galleries',
             'invitation.rsvps' => function($q) {
-                 $q->latest();
+                 $q->whereNotNull('invitation_guest_id')->latest();
             },
             'invitation.guestMessages' => function($q) {
-                 $q->latest();
+                 $q->whereNotNull('invitation_guest_id')->latest();
             }
         ]);
         
         $invite = $project->invitation;
+
+        // Cleanup orphans: delete any interaction that doesn't have a guest_id
+        if ($invite) {
+            $invite->rsvps()->whereNull('invitation_guest_id')->delete();
+            $invite->guestMessages()->whereNull('invitation_guest_id')->delete();
+        }
+
         $guests_count = $invite ? $invite->guests()->count() : 0;
         $rsvps = $invite ? $invite->rsvps : collect();
         
@@ -186,12 +194,18 @@ class ProjectController extends Controller
 
         if ($validated['is_active_slot'] && !$project->is_active_slot) {
             if (Project::where('is_active_slot', true)->count() >= 3) {
-                return back()->withErrors(['is_active_slot' => 'Slot aktif sudah penuh (maksimal 3).']);
+                return back()->withErrors(['is_active_slot' => 'SLOT PENUH: Sangkolo hanya menerima 3 project aktif sekaligus.']);
             }
         }
 
-        DB::transaction(function () use ($project, $validated, $request) {
-            $project->update($validated);
+        DB::transaction(function () use ($project, $validated) {
+            $projectData = collect($validated)->except(['invitation', 'schedules', 'gift_accounts'])->toArray();
+            
+            if ($project->name_project !== $validated['name_project']) {
+                $projectData['slug'] = Str::slug($validated['name_project']) . '-' . rand(10, 99);
+            }
+            
+            $project->update($projectData);
 
             // Handle Invitation
             if (isset($validated['invitation'])) {
@@ -223,19 +237,28 @@ class ProjectController extends Controller
                     $invitation->giftAccounts()->delete();
                     foreach ($validated['gift_accounts'] as $index => $account) {
                         if (!empty($account['bank_name'])) {
-                            $invitation->giftAccounts()->create(array_merge($account, ['sort_order' => $index]));
+                            $invitation->giftAccounts()->create(array_merge($account, ['sort_order' => $index * 10]));
                         }
                     }
                 }
             }
         });
 
-        return redirect()->route('projects.show', $project->id)->with('success', 'Perubahan berhasil disimpan.');
+        return redirect()->route('projects.show', $project)->with('success', 'Project Sangkolo berhasil diperbarui.');
     }
 
-    public function destroy(Project $project)
+    public function togglePublish(Project $project)
     {
-        $project->delete();
-        return redirect()->route('projects.index')->with('success', 'Project berhasil dihapus.');
+        if (!$project->invitation) {
+            return back()->withErrors(['error' => 'Silakan konfigurasi undangan terlebih dahulu di editor.']);
+        }
+
+        $project->invitation->update([
+            'is_published' => !$project->invitation->is_published,
+            'published_at' => !$project->invitation->is_published ? now() : null
+        ]);
+
+        $status = $project->invitation->is_published ? 'diterbitkan' : 'ditarik (unpublish)';
+        return back()->with('success', "Undangan berhasil {$status}.");
     }
 }

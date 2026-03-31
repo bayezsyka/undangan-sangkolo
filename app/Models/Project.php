@@ -13,10 +13,15 @@ class Project extends Model
     use HasFactory;
 
     protected $fillable = [
-        'client_id', 'name_project', 'event_type', 'event_date', 
+        'client_id', 'slug', 'name_project', 'event_type', 'event_date', 
         'status_order', 'status_project', 'is_active_slot', 
         'deadline', 'notes'
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 
     public function client(): BelongsTo
     {

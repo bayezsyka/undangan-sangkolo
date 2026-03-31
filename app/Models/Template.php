@@ -11,10 +11,15 @@ class Template extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'category', 'description', 
+        'name', 'slug', 'category', 'description', 
         'thumbnail', 'preview_url', 
         'default_settings', 'is_active'
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 
     protected $casts = [
         'default_settings' => 'array',

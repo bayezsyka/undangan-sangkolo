@@ -20,6 +20,7 @@ class WeddingSeeder extends Seeder
     {
         // 1. Create Template 1 (Elegant Minimal)
         $template1 = Template::updateOrCreate(['name' => 'Wedding Elegant Minimal'], [
+            'slug' => 'wedding-elegant-minimal',
             'category' => 'Wedding',
             'description' => 'Clean, refined, and minimalist design for high-end weddings.',
             'thumbnail' => 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=500',
@@ -34,6 +35,7 @@ class WeddingSeeder extends Seeder
 
         // Template 2 (Floral Serenity)
         $template2 = Template::updateOrCreate(['name' => 'Floral Serenity'], [
+            'slug' => 'floral-serenity',
             'category' => 'Wedding',
             'description' => 'Soft, romantic, and floral theme for a warm celebration.',
             'thumbnail' => 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&q=80&w=500',
@@ -49,6 +51,7 @@ class WeddingSeeder extends Seeder
         // 2. Create Client
         $client = Client::updateOrCreate(['email' => 'demo@client.com'], [
             'name' => 'Bpk. Ahmad Fauzan',
+            'slug' => 'ahmad-fauzan-demo',
             'whatsapp' => '081234567890',
             'notes' => 'Priority Client from Jakarta',
         ]);
@@ -56,6 +59,7 @@ class WeddingSeeder extends Seeder
         // 3. Create Project
         $project = Project::updateOrCreate(['name_project' => 'The Wedding of Fauzan & Aminah'], [
             'client_id' => $client->id,
+            'slug' => 'the-wedding-of-fauzan-aminah-demo',
             'event_type' => 'Wedding',
             'event_date' => now()->addMonths(2),
             'status_order' => 'paid',

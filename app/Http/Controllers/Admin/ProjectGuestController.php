@@ -36,16 +36,35 @@ class ProjectGuestController extends Controller
 
     public function downloadTemplate()
     {
-        $headers = ['nama_tamu', 'no_hp', 'tempat', 'kategori', 'catatan'];
-        $filename = "template_tamu_sangkolo.csv";
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
         
-        $handle = fopen('php://output', 'w');
-        header('Content-Type: text/csv');
-        header('Content-Disposition: attachment; filename="'.$filename.'"');
+        $headers = ['Nama Tamu', 'No HP', 'Tempat', 'Kategori', 'Catatan'];
         
-        fputcsv($handle, $headers);
-        fclose($handle);
-        exit;
+        // Styling Header
+        $headerStyle = [
+            'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
+            'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'startColor' => ['rgb' => '6366F1']]
+        ];
+        
+        $sheet->fromArray($headers, NULL, 'A1');
+        $sheet->getStyle('A1:E1')->applyFromArray($headerStyle);
+        
+        // Example Row
+        $sheet->fromArray(['Ahmad Fauzan', '081234567890', 'Jakarta', 'VIP', 'Teman Kantor'], NULL, 'A2');
+        
+        foreach (range('A', 'E') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = "template_tamu_sangkolo.xlsx";
+        
+        return response()->streamDownload(function() use ($writer) {
+            $writer->save('php://output');
+        }, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 
     public function export(Project $project)
@@ -78,11 +97,64 @@ class ProjectGuestController extends Controller
 
     public function regenerateCode(Project $project, InvitationGuest $guest)
     {
-        $guest->update([
-            'guest_code' => Str::random(8)
-        ]);
+        // Purge old interactions when link is regenerated
+        DB::transaction(function() use ($guest) {
+            $guest->rsvp()->delete();
+            $guest->message()->delete();
+            
+            $guest->update([
+                'guest_code' => Str::random(8)
+            ]);
+        });
         
-        return back()->with('success', 'Kode tamu berhasil diperbarui.');
+        return back()->with('success', 'Kode tamu berhasil di-reset. Data kehadiran & ucapan lama tamu ini telah dihapus.');
+    }
+
+    public function store(Request $request, Project $project)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'location' => 'nullable|string|max:255',
+            'category' => 'nullable|string|max:100',
+            'notes' => 'nullable|string',
+        ]);
+
+        $project->load('invitation');
+        
+        InvitationGuest::create(array_merge($validated, [
+            'invitation_id' => $project->invitation->id,
+            'guest_code' => Str::random(8)
+        ]));
+
+        return back()->with('success', 'Tamu baru berhasil ditambahkan.');
+    }
+
+    public function update(Request $request, Project $project, InvitationGuest $guest)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'location' => 'nullable|string|max:255',
+            'category' => 'nullable|string|max:100',
+            'notes' => 'nullable|string',
+        ]);
+
+        $guest->update($validated);
+
+        return back()->with('success', 'Data tamu berhasil diperbarui.');
+    }
+
+    public function destroy(Project $project, InvitationGuest $guest)
+    {
+        // Cleanup interactions before deleting guest
+        DB::transaction(function() use ($guest) {
+            $guest->rsvp()->delete();
+            $guest->message()->delete();
+            $guest->delete();
+        });
+
+        return back()->with('success', 'Tamu dan seluruh respon terkait berhasil dihapus.');
     }
 
     public function import(Request $request, Project $project)
@@ -106,12 +178,16 @@ class ProjectGuestController extends Controller
                 return back()->withErrors(['file' => 'File kosong atau tidak memiliki data tamu.']);
             }
 
-            $headers = array_map('strtolower', array_map('trim', $data[0]));
+            // Normalisasi Headers: Trim, Lowercase, dan bersihkan dari whitespace
+            $headers = array_map(function($h) {
+                return Str::slug(trim($h), '_');
+            }, $data[0]);
+
             $requiredHeaders = ['nama_tamu'];
             
             foreach ($requiredHeaders as $req) {
                 if (!in_array($req, $headers)) {
-                    return back()->withErrors(['file' => "Header kolom '{$req}' tidak ditemukan."]);
+                    return back()->withErrors(['file' => "Header kolom '{$req}' atau 'Nama Tamu' tidak ditemukan."]);
                 }
             }
 

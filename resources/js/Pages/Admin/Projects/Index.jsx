@@ -78,7 +78,7 @@ export default function Index({ auth, projects, filters, active_slots_count }) {
                             {projects.data.map((project) => (
                                 <tr key={project.id} className="group hover:bg-gray-50/50 transition-colors">
                                     <td className="px-6 py-4">
-                                        <Link href={route('projects.show', project.id)} className="font-bold text-gray-900 hover:text-indigo-600 transition-colors">{project.name_project}</Link>
+                                        <Link href={route('projects.show', project)} className="font-bold text-gray-900 hover:text-indigo-600 transition-colors">{project.name_project}</Link>
                                         <div className="text-[11px] text-gray-400 mt-0.5">{project.event_type} • {new Date(project.event_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
                                     </td>
                                     <td className="px-6 py-4">
@@ -103,7 +103,7 @@ export default function Index({ auth, projects, filters, active_slots_count }) {
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <Link href={route('projects.edit', project.id)} className="p-2 text-gray-400 hover:text-indigo-600 transition-colors">
+                                            <Link href={route('projects.edit', project)} className="p-2 text-gray-400 hover:text-indigo-600 transition-colors">
                                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                                             </Link>
                                         </div>
