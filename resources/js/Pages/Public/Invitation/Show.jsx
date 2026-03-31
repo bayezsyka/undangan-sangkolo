@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 
-export default function Show({ invitation }) {
+export default function Show({ invitation, guest }) {
     const { template, sections, galleries, guest_messages, slug } = invitation;
     const settings = template.default_settings || {};
     
@@ -9,12 +9,21 @@ export default function Show({ invitation }) {
         <div className="min-h-screen bg-white text-slate-800 font-sans selection:bg-indigo-100" style={{ '--primary': settings.primary_color || '#4f46e5' }}>
             <Head title={invitation.title} />
             
+            {/* Personal Welcome Banner */}
+            {guest && (
+                <div className="fixed top-0 left-0 right-0 z-[100] bg-white/90 backdrop-blur-md border-b border-indigo-50 px-6 py-3 flex items-center justify-center animate-in slide-in-from-top duration-700">
+                    <p className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em]">Khusus Untuk: <span className="text-slate-900">{guest.name}</span></p>
+                </div>
+            )}
+
             {/* Modular Sections Rendering */}
             <div className="max-w-screen-sm mx-auto shadow-2xl bg-white min-h-screen">
                 {sections.filter(s => s.is_active).map((section, idx) => (
                     <SectionRenderer 
                         key={section.id} 
                         section={section} 
+                        invitation={invitation}
+                        guest={guest}
                         galleries={galleries} 
                         messages={guest_messages}
                         slug={slug}
@@ -32,7 +41,7 @@ export default function Show({ invitation }) {
     );
 }
 
-function SectionRenderer({ section, galleries, messages, slug, isFirst }) {
+function SectionRenderer({ section, invitation, guest, galleries, messages, slug, isFirst }) {
     const { section_type, title, content } = section;
 
     switch (section_type) {
@@ -43,8 +52,19 @@ function SectionRenderer({ section, galleries, messages, slug, isFirst }) {
                     <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/80 z-10"></div>
                     <div className="relative z-20 space-y-6">
                         <p className="text-xs font-black uppercase tracking-[0.4em] text-indigo-300">{title || 'The Wedding of'}</p>
-                        <h1 className="text-5xl font-black leading-none tracking-tight">{content?.couple_names || 'Mempelai Pria & Wanita'}</h1>
-                        <p className="text-sm font-bold tracking-widest italic text-white/60">{content?.event_date_formatted || 'Minggu, 12 Desember 2026'}</p>
+                        <h1 className="text-5xl font-black leading-none tracking-tight">{invitation.host_names || content?.couple_names || 'Mempelai Pria & Wanita'}</h1>
+                        
+                        <div className="py-8 animate-in fade-in slide-in-from-bottom duration-1000">
+                             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 mb-3">Kepada Yth.</p>
+                             <div className="text-xl font-bold bg-white/10 backdrop-blur-md px-6 py-4 rounded-3xl border border-white/10 inline-block">
+                                 {guest ? guest.name : 'Bapak/Ibu/Saudara/i'}
+                             </div>
+                             {guest?.location && (
+                                 <p className="text-[10px] font-bold text-indigo-300 mt-2 tracking-widest italic">di {guest.location}</p>
+                             )}
+                        </div>
+
+                        <p className="text-sm font-bold tracking-widest italic text-white/60">{invitation.event_time || content?.event_date_formatted || 'Minggu, 12 Desember 2026'}</p>
                         {isFirst && (
                              <div className="pt-12 animate-bounce opacity-40">
                                  <svg className="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" /></svg>
@@ -60,14 +80,14 @@ function SectionRenderer({ section, galleries, messages, slug, isFirst }) {
                 <section className="py-20 px-8 text-center space-y-8 border-b border-slate-100">
                     <div className="space-y-2">
                         <h2 className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em]">{title || 'Acara Utama'}</h2>
-                        <h3 className="text-3xl font-black text-slate-900">{content?.location_name || 'Gedung Pernikahan'}</h3>
+                        <h3 className="text-3xl font-black text-slate-900">{invitation.event_location_name || content?.location_name || 'Gedung Pernikahan'}</h3>
                     </div>
-                    <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 space-y-4">
-                        <p className="text-sm font-bold leading-relaxed">{content?.address || 'Jl. Contoh Alamat No. 123, Kota Makassar'}</p>
-                        <p className="text-xs font-bold text-slate-400 capitalize">{content?.time || 'Pukul 10:00 - Selesai'}</p>
+                    <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 space-y-4 text-center">
+                        <p className="text-sm font-bold leading-relaxed">{invitation.event_address || content?.address || 'Jl. Contoh Alamat No. 123, Kota Makassar'}</p>
+                        <p className="text-[10px] font-black text-slate-400 capitalize bg-white inline-block px-4 py-2 rounded-full shadow-sm">{invitation.event_time || content?.time || 'Pukul 10:00 - Selesai'}</p>
                     </div>
-                    {content?.maps_url && (
-                        <a href={content.maps_url} target="_blank" className="inline-flex items-center gap-2 bg-indigo-600 text-white font-black py-4 px-10 rounded-2xl text-xs uppercase tracking-widest shadow-xl shadow-indigo-100">Buka Maps</a>
+                    {(invitation.event_maps_url || content?.maps_url) && (
+                        <a href={invitation.event_maps_url || content.maps_url} target="_blank" className="inline-flex items-center gap-2 bg-indigo-600 text-white font-black py-4 px-10 rounded-2xl text-xs uppercase tracking-widest shadow-xl shadow-indigo-100">Buka Maps</a>
                     )}
                 </section>
             );
@@ -78,7 +98,7 @@ function SectionRenderer({ section, galleries, messages, slug, isFirst }) {
                     <h2 className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em] mb-12">{title || 'Momen Bahagia'}</h2>
                     <div className="grid grid-cols-2 gap-3">
                         {galleries.map((img, i) => (
-                            <div key={i} className={`rounded-2xl overflow-hidden aspect-[3/4] bg-slate-100 ${i % 3 === 0 ? 'col-span-2 aspect-video' : ''}`}>
+                            <div key={img.id || i} className={`rounded-2xl overflow-hidden aspect-[3/4] bg-slate-100 ${i % 3 === 0 ? 'col-span-2 aspect-video' : ''}`}>
                                 <img src={img.image_path} className="w-full h-full object-cover" />
                             </div>
                         ))}
@@ -87,23 +107,24 @@ function SectionRenderer({ section, galleries, messages, slug, isFirst }) {
             );
 
         case 'rsvp':
-            return <RsvpSection slug={slug} title={title} />;
+            return <RsvpSection slug={slug} title={invitation.host_names ? `RSVP : ${invitation.host_names}` : title} guest={guest} />;
 
         case 'wishes':
         case 'guest_messages':
-            return <WishesSection slug={slug} title={title} messages={messages} />;
+            return <WishesSection slug={slug} title={title} messages={messages} guest={guest} />;
 
         default:
             return null;
     }
 }
 
-function RsvpSection({ slug, title }) {
+function RsvpSection({ slug, title, guest }) {
     const { data, setData, post, processing, reset, recentlySuccessful } = useForm({
-        name: '',
+        name: guest?.name || '',
         attendance_status: 'attending',
         guest_count: 1,
-        notes: ''
+        notes: '',
+        invitation_guest_id: guest?.id || null
     });
 
     const submit = (e) => {
@@ -129,8 +150,9 @@ function RsvpSection({ slug, title }) {
                         placeholder="Nama Lengkap"
                         value={data.name}
                         onChange={e => setData('name', e.target.value)}
-                        className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-indigo-100 outline-none font-bold text-sm"
+                        className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-indigo-100 outline-none font-bold text-sm disabled:bg-slate-100 disabled:text-slate-400"
                         required
+                        disabled={!!guest}
                     />
                     <select 
                          value={data.attendance_status}
@@ -167,11 +189,12 @@ function RsvpSection({ slug, title }) {
     );
 }
 
-function WishesSection({ slug, title, messages }) {
-    const { data, setData, post, processing, reset } = useForm({
-        name: '',
+function WishesSection({ slug, title, messages, guest }) {
+    const { data, setData, post, processing, reset, recentlySuccessful } = useForm({
+        name: guest?.name || '',
         relation: '',
-        message: ''
+        message: '',
+        invitation_guest_id: guest?.id || null
     });
 
     const submit = (e) => {
@@ -189,35 +212,40 @@ function WishesSection({ slug, title, messages }) {
                  <p className="text-xs font-bold text-slate-400">Tuliskan pesan manis untuk kami.</p>
              </div>
              
-             <form onSubmit={submit} className="mb-12 space-y-4 p-8 rounded-3xl border border-slate-100 bg-white shadow-sm">
-                <input 
-                    type="text" 
-                    placeholder="Nama Anda"
-                    value={data.name}
-                    onChange={e => setData('name', e.target.value)}
-                    className="w-full p-4 rounded-2xl border border-slate-50 bg-slate-50 focus:bg-white outline-none font-bold text-sm"
-                    required
-                />
-                <textarea 
-                    placeholder="Tulis ucapan & doa..."
-                    value={data.message}
-                    onChange={e => setData('message', e.target.value)}
-                    className="w-full p-4 rounded-2xl border border-slate-50 bg-slate-50 focus:bg-white outline-none font-bold text-sm h-32"
-                    required
-                ></textarea>
-                <button 
-                    disabled={processing}
-                    className="w-full bg-slate-900 text-white font-black py-4 px-6 rounded-2xl text-xs uppercase tracking-widest shadow-xl shadow-slate-100 active:scale-[0.98] transition-all"
-                >
-                    Kirim Ucapan
-                </button>
-             </form>
+             {recentlySuccessful ? (
+                  <div className="p-8 rounded-3xl bg-slate-900 text-white text-center font-black mb-12">Ucapan Anda Sudah Terkirim!</div>
+             ) : (
+                <form onSubmit={submit} className="mb-12 space-y-4 p-8 rounded-3xl border border-slate-100 bg-white shadow-sm">
+                    <input 
+                        type="text" 
+                        placeholder="Nama Anda"
+                        value={data.name}
+                        onChange={e => setData('name', e.target.value)}
+                        className="w-full p-4 rounded-2xl border border-slate-50 bg-slate-50 focus:bg-white outline-none font-bold text-sm disabled:opacity-50"
+                        required
+                        disabled={!!guest}
+                    />
+                    <textarea 
+                        placeholder="Tulis ucapan & doa..."
+                        value={data.message}
+                        onChange={e => setData('message', e.target.value)}
+                        className="w-full p-4 rounded-2xl border border-slate-50 bg-slate-50 focus:bg-white outline-none font-bold text-sm h-32"
+                        required
+                    ></textarea>
+                    <button 
+                        disabled={processing}
+                        className="w-full bg-slate-900 text-white font-black py-4 px-6 rounded-2xl text-xs uppercase tracking-widest shadow-xl shadow-slate-100 active:scale-[0.98] transition-all"
+                    >
+                        Kirim Ucapan
+                    </button>
+                </form>
+             )}
 
              <div className="space-y-6">
                 {messages.length > 0 ? messages.map((m, i) => (
-                    <div key={i} className="p-6 rounded-3xl bg-slate-50 space-y-2 border border-slate-100">
+                    <div key={m.id || i} className="p-6 rounded-3xl bg-slate-50 space-y-2 border border-slate-100 animate-in slide-in-from-bottom-4 duration-500">
                         <div className="flex items-center gap-2">
-                             <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-[10px] font-black text-indigo-600">{m.name.charAt(0)}</div>
+                             <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-[10px] font-black text-indigo-600 uppercase">{m.name.charAt(0)}</div>
                              <p className="text-xs font-black text-slate-900">{m.name}</p>
                         </div>
                         <p className="text-sm text-slate-600 leading-relaxed font-bold italic">"{m.message}"</p>

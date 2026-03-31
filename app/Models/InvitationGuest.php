@@ -6,22 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Rsvp extends Model
+class InvitationGuest extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'invitation_id', 'invitation_guest_id', 'name', 
-        'attendance_status', 'guest_count', 'notes'
+        'invitation_id', 'name', 'phone', 'location', 
+        'category', 'notes', 'guest_code'
     ];
 
     public function invitation(): BelongsTo
     {
         return $this->belongsTo(Invitation::class);
-    }
-
-    public function guest(): BelongsTo
-    {
-        return $this->belongsTo(InvitationGuest::class, 'invitation_guest_id');
     }
 }

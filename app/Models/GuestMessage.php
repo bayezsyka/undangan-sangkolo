@@ -10,7 +10,10 @@ class GuestMessage extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['invitation_id', 'name', 'relation', 'message', 'is_approved'];
+    protected $fillable = [
+        'invitation_id', 'invitation_guest_id', 'name', 
+        'relation', 'message', 'is_approved'
+    ];
 
     protected $casts = [
         'is_approved' => 'boolean',
@@ -19,5 +22,10 @@ class GuestMessage extends Model
     public function invitation(): BelongsTo
     {
         return $this->belongsTo(Invitation::class);
+    }
+
+    public function guest(): BelongsTo
+    {
+        return $this->belongsTo(InvitationGuest::class, 'invitation_guest_id');
     }
 }

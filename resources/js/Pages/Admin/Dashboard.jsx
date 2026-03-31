@@ -75,9 +75,9 @@ export default function Dashboard({ auth, stats, recent_projects, recent_leads }
                             </thead>
                             <tbody className="divide-y divide-gray-50">
                                 {recent_projects.length > 0 ? recent_projects.map((project) => (
-                                    <tr key={project.id} className="group hover:bg-gray-50/50 transition-colors">
+                                    <tr key={project.id} className="group hover:bg-gray-50/50 transition-all cursor-pointer" onClick={() => window.location.href = route('projects.show', project.id)}>
                                         <td className="px-6 py-4">
-                                            <div className="font-bold text-gray-900 leading-tight">{project.name_project}</div>
+                                            <div className="font-bold text-gray-900 leading-tight group-hover:text-indigo-600 transition-colors">{project.name_project}</div>
                                             <div className="text-[11px] text-gray-400 mt-0.5">{project.client.name}</div>
                                         </td>
                                         <td className="px-6 py-4">
@@ -86,15 +86,10 @@ export default function Dashboard({ auth, stats, recent_projects, recent_leads }
                                                 type={project.status_project === 'finished' ? 'success' : (project.status_project === 'designing' ? 'primary' : 'default')}
                                             />
                                         </td>
-                                        <td className="px-6 py-4">
-                                            {project.is_active_slot ? (
-                                                <span className="flex items-center gap-2 text-indigo-600">
-                                                    <span className="w-2 h-2 rounded-full bg-indigo-600"></span>
-                                                    <span className="text-[11px] font-black uppercase tracking-wider">Active</span>
-                                                </span>
-                                            ) : (
-                                                <span className="text-[11px] font-bold text-gray-300 uppercase tracking-wider">Queue</span>
-                                            )}
+                                        <td className="px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end gap-2 text-indigo-600">
+                                                <svg className="w-4 h-4 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                                            </div>
                                         </td>
                                     </tr>
                                 )) : (

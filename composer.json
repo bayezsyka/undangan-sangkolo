@@ -10,6 +10,7 @@
         "inertiajs/inertia-laravel": "*",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
+        "phpoffice/phpspreadsheet": "^5.5",
         "tightenco/ziggy": "*"
     },
     "require-dev": {

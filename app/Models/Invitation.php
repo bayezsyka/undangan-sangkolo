@@ -13,7 +13,14 @@ class Invitation extends Model
 
     protected $fillable = [
         'project_id', 'template_id', 'slug', 'title', 
+        'host_names', 'cover_image', 'background_music', 
+        'event_time', 'event_location_name', 'event_address', 
+        'event_maps_url', 'opening_quote',
         'description', 'is_published'
+    ];
+
+    protected $casts = [
+        'is_published' => 'boolean',
     ];
 
     public function project(): BelongsTo
@@ -28,21 +35,26 @@ class Invitation extends Model
 
     public function sections(): HasMany
     {
-        return $this->hasMany(InvitationSection::class)->orderBy('order');
+        return $this->hasMany(InvitationSection::class);
     }
 
     public function galleries(): HasMany
     {
-        return $this->hasMany(Gallery::class)->orderBy('order');
+        return $this->hasMany(Gallery::class);
     }
 
     public function guestMessages(): HasMany
     {
-        return $this->hasMany(GuestMessage::class)->latest();
+        return $this->hasMany(GuestMessage::class);
     }
 
     public function rsvps(): HasMany
     {
-        return $this->hasMany(Rsvp::class)->latest();
+        return $this->hasMany(Rsvp::class);
+    }
+
+    public function guests(): HasMany
+    {
+        return $this->hasMany(InvitationGuest::class);
     }
 }
