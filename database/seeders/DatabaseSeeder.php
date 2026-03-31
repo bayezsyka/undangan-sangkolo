@@ -17,5 +17,9 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin Sangkolo',
             'password' => bcrypt('password'),
         ]);
+
+        $this->call([
+            WeddingSeeder::class,
+        ]);
     }
 }

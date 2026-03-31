@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
-use App\Models\Lead;
+use App\Models\Client;
 use App\Models\Invitation;
 use Inertia\Inertia;
 
@@ -25,13 +25,13 @@ class DashboardController extends Controller
                     'total' => 3,
                     'is_full' => $activeSlotsCount >= 3,
                 ],
-                'leads_count' => Lead::where('status', 'new')->count(),
+                'clients_count' => Client::count(),
                 'waiting_list_count' => $waitingListCount,
                 'draft_invitations' => Invitation::where('is_published', false)->count(),
                 'published_invitations' => Invitation::where('is_published', true)->count(),
             ],
             'recent_projects' => Project::with('client')->latest()->take(5)->get(),
-            'recent_leads' => Lead::latest()->take(5)->get(),
+            'total_rsvps' => \App\Models\Rsvp::count(),
         ]);
     }
 }

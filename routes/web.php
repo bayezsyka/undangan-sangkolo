@@ -23,10 +23,9 @@ Route::middleware('guest')->group(function () {
 // Protected Admin Routes
 Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
-    Route::resource('/leads', LeadController::class);
+    Route::resource('/clients', \App\Http\Controllers\Admin\ClientController::class);
     Route::resource('/projects', ProjectController::class);
     Route::resource('/templates', TemplateController::class);
-    Route::get('/rsvp', RsvpController::class)->name('rsvp.index');
     Route::get('/settings', SettingsController::class)->name('settings.index');
 
     Route::get('/projects/{project}/guests', [\App\Http\Controllers\Admin\ProjectGuestController::class, 'index'])->name('projects.guests.index');

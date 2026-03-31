@@ -1,124 +1,301 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 
 export default function Show({ invitation, guest }) {
-    const { template, sections, galleries, guest_messages, slug } = invitation;
-    const settings = template.default_settings || {};
-    
+    const { 
+        template, schedules = [], gift_accounts = [], galleries = [], 
+        guest_messages = [], slug, bride_full_name, bride_nickname, 
+        bride_father_name, bride_mother_name, groom_full_name, 
+        groom_nickname, groom_father_name, groom_mother_name,
+        wedding_date, countdown_datetime, opening_label, opening_quote,
+        closing_note, gift_note, hero_subtitle, host_names
+    } = invitation;
+
+    const [isOpened, setIsOpened] = useState(false);
+    const audioRef = useRef(null);
+
+    const openInvitation = () => {
+        setIsOpened(true);
+        if (invitation.background_music && audioRef.current) {
+            audioRef.current.play().catch(e => console.log("Audio play blocked: ", e));
+        }
+    };
+
+    // Countdown Timer logic if needed
+    const [timeLeft, setTimeLeft] = useState(null);
+
+    useEffect(() => {
+        if (!countdown_datetime) return;
+        const target = new Date(countdown_datetime).getTime();
+
+        const timer = setInterval(() => {
+            const now = new Date().getTime();
+            const diff = target - now;
+            if (diff < 0) {
+                clearInterval(timer);
+                setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+            } else {
+                setTimeLeft({
+                    days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+                    hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+                    minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+                    seconds: Math.floor((diff % (1000 * 60)) / 1000)
+                });
+            }
+        }, 1000);
+        return () => clearInterval(timer);
+    }, [countdown_datetime]);
+
     return (
-        <div className="min-h-screen bg-white text-slate-800 font-sans selection:bg-indigo-100" style={{ '--primary': settings.primary_color || '#4f46e5' }}>
-            <Head title={invitation.title} />
+        <div className="min-h-screen bg-neutral-50 text-neutral-800 font-sans selection:bg-rose-100 overflow-x-hidden">
+            <Head title={`${host_names || 'Wedding Invitation'} - ${guest?.name || ''}`} />
             
-            {/* Personal Welcome Banner */}
-            {guest && (
-                <div className="fixed top-0 left-0 right-0 z-[100] bg-white/90 backdrop-blur-md border-b border-indigo-50 px-6 py-3 flex items-center justify-center animate-in slide-in-from-top duration-700">
-                    <p className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em]">Khusus Untuk: <span className="text-slate-900">{guest.name}</span></p>
-                </div>
+            {invitation.background_music && (
+                <audio ref={audioRef} src={invitation.background_music} loop />
             )}
 
-            {/* Modular Sections Rendering */}
-            <div className="max-w-screen-sm mx-auto shadow-2xl bg-white min-h-screen">
-                {sections.filter(s => s.is_active).map((section, idx) => (
-                    <SectionRenderer 
-                        key={section.id} 
-                        section={section} 
-                        invitation={invitation}
-                        guest={guest}
-                        galleries={galleries} 
-                        messages={guest_messages}
-                        slug={slug}
-                        isFirst={idx === 0}
-                    />
-                ))}
+            {/* COVER SECTION */}
+            {!isOpened && (
+                <section className="fixed inset-0 z-[200] flex flex-col items-center justify-center p-8 bg-white overflow-hidden">
+                    <div className="absolute inset-0 opacity-10 pointer-events-none">
+                         <div className="absolute top-0 left-0 w-64 h-64 border-t border-l border-neutral-300 rounded-tl-[100px]"></div>
+                         <div className="absolute bottom-0 right-0 w-64 h-64 border-b border-r border-neutral-300 rounded-br-[100px]"></div>
+                    </div>
+                    
+                    <div className="relative text-center space-y-12 max-w-sm animate-in fade-in zoom-in duration-1000">
+                        <div className="space-y-4">
+                            <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-neutral-400">{opening_label || 'WEDDING INVITATION'}</h4>
+                            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-neutral-900 leading-tight">
+                                {bride_nickname || 'Siti'} <span className="text-neutral-300">&</span> {groom_nickname || 'Fauzan'}
+                            </h1>
+                        </div>
 
-                {/* Footer simple */}
-                <footer className="py-12 px-6 text-center bg-slate-50 border-t border-slate-100">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dibuat Dengan ❤️ Oleh</p>
-                    <h4 className="text-lg font-black text-indigo-600 tracking-tighter">Undangan Sangkolo</h4>
-                </footer>
+                        <div className="py-10 space-y-4">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+                            <h2 className="text-2xl font-black text-neutral-900">{guest?.name || 'VVIP Guest'}</h2>
+                        </div>
+
+                        <button 
+                            onClick={openInvitation}
+                            className="bg-neutral-900 text-white font-black py-4 px-12 rounded-full text-[10px] uppercase tracking-widest shadow-2xl hover:bg-neutral-800 transition-all active:scale-95"
+                        >
+                            Open Invitation
+                        </button>
+                    </div>
+                </section>
+            )}
+
+            {/* MAIN CONTENT (Scrollable) */}
+            <div className={`transition-all duration-1000 ${isOpened ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
+                <div className="max-w-screen-sm mx-auto bg-white shadow-2xl relative">
+                    
+                    {/* HERO */}
+                    <div className="relative h-screen flex flex-col justify-end p-12 text-white overflow-hidden">
+                        <div className="absolute inset-0 bg-neutral-900">
+                            {invitation.cover_image && (
+                                <img src={invitation.cover_image} className="w-full h-full object-cover opacity-60" />
+                            )}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        </div>
+                        <div className="relative z-10 space-y-4 animate-in slide-in-from-bottom duration-1000 delay-500">
+                            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-neutral-300">{hero_subtitle || 'The Wedding of'}</p>
+                            <h2 className="text-4xl font-black leading-tight tracking-tighter uppercase whitespace-pre-wrap">{host_names || `${bride_nickname} & ${groom_nickname}`}</h2>
+                            <p className="text-sm font-bold tracking-widest uppercase text-white/60">{wedding_date ? new Date(wedding_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}</p>
+                        </div>
+                    </div>
+
+                    {/* OPENING QUOTE */}
+                    <section className="py-32 px-10 text-center space-y-8 bg-neutral-50/50">
+                        <div className="max-w-md mx-auto space-y-6">
+                            <div className="w-10 h-[1px] bg-neutral-200 mx-auto"></div>
+                            <p className="text-sm font-medium italic text-neutral-500 leading-relaxed">
+                                {opening_quote || '"And of His signs is that He created for you from yourselves mates that you may find tranquility in them; and He placed between you affection and mercy."'}
+                            </p>
+                            <div className="w-10 h-[1px] bg-neutral-200 mx-auto"></div>
+                        </div>
+                    </section>
+
+                    {/* COUPLE */}
+                    <section className="py-32 px-10 space-y-24 bg-white">
+                        {/* Bride */}
+                        <div className="text-center space-y-6">
+                             <div className="w-32 h-32 rounded-full overflow-hidden mx-auto border-4 border-neutral-50 shadow-xl">
+                                 <img src={`https://ui-avatars.com/api/?name=${bride_nickname || 'B'}&background=f5f5f5&color=333&size=200`} className="w-full h-full object-cover" />
+                             </div>
+                             <div className="space-y-1">
+                                 <h3 className="text-2xl font-black text-neutral-900 tracking-tight">{bride_full_name || 'Mempelai Wanita'}</h3>
+                                 <p className="text-xs font-bold text-neutral-400">Putri dari Bapak {bride_father_name || '...'} & Ibu {bride_mother_name || '...'}</p>
+                             </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-center gap-4 py-4 text-neutral-200">
+                             <div className="flex-1 h-[1px] bg-neutral-100"></div>
+                             <span className="text-2xl font-black italic">&</span>
+                             <div className="flex-1 h-[1px] bg-neutral-100"></div>
+                        </div>
+
+                        {/* Groom */}
+                        <div className="text-center space-y-6">
+                             <div className="w-32 h-32 rounded-full overflow-hidden mx-auto border-4 border-neutral-50 shadow-xl">
+                                 <img src={`https://ui-avatars.com/api/?name=${groom_nickname || 'G'}&background=ececec&color=333&size=200`} className="w-full h-full object-cover" />
+                             </div>
+                             <div className="space-y-1">
+                                 <h3 className="text-2xl font-black text-neutral-900 tracking-tight">{groom_full_name || 'Mempelai Pria'}</h3>
+                                 <p className="text-xs font-bold text-neutral-400">Putra dari Bapak {groom_father_name || '...'} & Ibu {groom_mother_name || '...'}</p>
+                             </div>
+                        </div>
+                    </section>
+
+                    {/* COUNTDOWN */}
+                    {timeLeft && (
+                        <section className="py-24 px-10 bg-neutral-900 text-white text-center rounded-t-[60px] -mt-10 relative z-20">
+                             <div className="grid grid-cols-4 gap-4 max-w-sm mx-auto">
+                                 <CountdownBox value={timeLeft.days} unit="Days" />
+                                 <CountdownBox value={timeLeft.hours} unit="Hrs" />
+                                 <CountdownBox value={timeLeft.minutes} unit="Mins" />
+                                 <CountdownBox value={timeLeft.seconds} unit="Secs" />
+                             </div>
+                        </section>
+                    )}
+
+                    {/* EVENTS / SCHEDULES */}
+                    <section className="py-32 px-10 bg-white">
+                        <div className="text-center mb-20">
+                            <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-neutral-400 mb-2">Our Wedding</h4>
+                            <h2 className="text-3xl font-black text-neutral-900 tracking-tighter">Event Schedule</h2>
+                        </div>
+                        <div className="space-y-12">
+                            {schedules.map((item, idx) => (
+                                <div key={idx} className="relative p-10 bg-neutral-50 rounded-[40px] space-y-6 group hover:bg-neutral-900 hover:text-white transition-all duration-500">
+                                     <div className="flex justify-between items-start">
+                                         <div className="space-y-1">
+                                             <h5 className="text-xl font-black tracking-tight">{item.title}</h5>
+                                             <p className="text-[10px] font-black uppercase tracking-widest opacity-60">
+                                                {new Date(item.date).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                                             </p>
+                                         </div>
+                                         <span className="text-[10px] font-black bg-white group-hover:bg-neutral-800 text-neutral-900 group-hover:text-white border px-4 py-1.5 rounded-full uppercase tracking-widest transition-all">
+                                             {item.start_time.substring(0, 5)} - {item.end_time ? item.end_time.substring(0, 5) : 'Selesai'}
+                                         </span>
+                                     </div>
+                                     <div className="space-y-2">
+                                         <p className="text-sm font-black">{item.location_name}</p>
+                                         <p className="text-xs font-medium opacity-60 leading-relaxed">{item.address}</p>
+                                     </div>
+                                     {item.maps_url && (
+                                         <a href={item.maps_url} target="_blank" className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest underline underline-offset-4 pt-4 group-hover:text-indigo-400">View Map</a>
+                                     )}
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* GALLERY */}
+                    {galleries.length > 0 && (
+                        <section className="py-32 px-4 bg-neutral-50">
+                            <div className="text-center mb-16">
+                                <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-neutral-400 mb-2">Our Gallery</h4>
+                                <h2 className="text-3xl font-black text-neutral-900 tracking-tighter">Captured Moments</h2>
+                            </div>
+                            <div className="columns-2 gap-4 space-y-4 px-4 overflow-hidden">
+                                {galleries.map((img, i) => (
+                                    <div key={i} className="rounded-3xl overflow-hidden shadow-sm break-inside-avoid">
+                                        <img src={img.image_path} className="w-full h-auto object-cover hover:scale-110 transition-all duration-700" loading="lazy" />
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
+                    {/* GIFTS */}
+                    {gift_accounts.length > 0 && (
+                        <section className="py-32 px-10 bg-white text-center">
+                            <div className="mb-16 space-y-4">
+                                <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-neutral-400">Wedding Gift</h4>
+                                <h2 className="text-3xl font-black text-neutral-900 tracking-tighter">Amplop Online</h2>
+                                <p className="text-xs font-medium text-neutral-400 max-w-xs mx-auto leading-relaxed">{gift_note || 'Doa restu Anda merupakan kado terindah bagi kami. Namun jika ingin memberikan tanda kasih lainnya, silakan melalui:'}</p>
+                            </div>
+                            <div className="space-y-4">
+                                {gift_accounts.map((gift, i) => (
+                                    <GiftCard key={i} gift={gift} />
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
+                    {/* RSVP & WISHES */}
+                    <div className="px-6 pb-20 space-y-8">
+                        <RsvpSection slug={slug} guest={guest} />
+                        <WishesSection slug={slug} messages={guest_messages} guest={guest} />
+                    </div>
+
+                    {/* FOOTER */}
+                    <footer className="py-24 px-10 text-center bg-neutral-50 rounded-t-[60px] border-t border-neutral-100">
+                        <div className="space-y-8">
+                             <div className="space-y-4 max-w-xs mx-auto">
+                                 <p className="text-sm font-medium italic text-neutral-400">{closing_note || "Atas kehadiran dan doa restu Anda, kami ucapkan terima kasih yang sebesar-besarnya."}</p>
+                                 <h4 className="text-2xl font-black tracking-tighter text-neutral-900 uppercase">
+                                     {bride_nickname} <span className="text-neutral-300">&</span> {groom_nickname}
+                                 </h4>
+                             </div>
+                             
+                             <div className="pt-12 border-t border-neutral-200/50">
+                                 <p className="text-[10px] font-black tracking-[0.3em] text-neutral-300 uppercase mb-3">Created With Love</p>
+                                 <p className="text-lg font-black tracking-tighter text-neutral-900">Undangan Sangkolo</p>
+                                 <p className="text-[9px] font-bold text-neutral-400 tracking-widest mt-1">sangkolo.store</p>
+                             </div>
+                        </div>
+                    </footer>
+
+                    {/* Floating Music Control */}
+                    {isOpened && invitation.background_music && (
+                        <div className="fixed bottom-10 right-6 z-[100]">
+                             <button onClick={() => {
+                                 if (audioRef.current.paused) audioRef.current.play();
+                                 else audioRef.current.pause();
+                             }} className="w-12 h-12 bg-white/80 backdrop-blur-md rounded-full shadow-2xl flex items-center justify-center border border-neutral-100 text-neutral-900 animate-pulse">
+                                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2A1 1 0 007 8z" /></svg>
+                             </button>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
 }
 
-function SectionRenderer({ section, invitation, guest, galleries, messages, slug, isFirst }) {
-    const { section_type, title, content } = section;
-
-    switch (section_type) {
-        case 'hero':
-        case 'opening':
-            return (
-                <section className="relative h-screen flex items-center justify-center text-center p-8 overflow-hidden bg-slate-900 text-white">
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/80 z-10"></div>
-                    <div className="relative z-20 space-y-6">
-                        <p className="text-xs font-black uppercase tracking-[0.4em] text-indigo-300">{title || 'The Wedding of'}</p>
-                        <h1 className="text-5xl font-black leading-none tracking-tight">{invitation.host_names || content?.couple_names || 'Mempelai Pria & Wanita'}</h1>
-                        
-                        <div className="py-8 animate-in fade-in slide-in-from-bottom duration-1000">
-                             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 mb-3">Kepada Yth.</p>
-                             <div className="text-xl font-bold bg-white/10 backdrop-blur-md px-6 py-4 rounded-3xl border border-white/10 inline-block">
-                                 {guest ? guest.name : 'Bapak/Ibu/Saudara/i'}
-                             </div>
-                             {guest?.location && (
-                                 <p className="text-[10px] font-bold text-indigo-300 mt-2 tracking-widest italic">di {guest.location}</p>
-                             )}
-                        </div>
-
-                        <p className="text-sm font-bold tracking-widest italic text-white/60">{invitation.event_time || content?.event_date_formatted || 'Minggu, 12 Desember 2026'}</p>
-                        {isFirst && (
-                             <div className="pt-12 animate-bounce opacity-40">
-                                 <svg className="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" /></svg>
-                             </div>
-                        )}
-                    </div>
-                </section>
-            );
-
-        case 'event':
-        case 'location':
-            return (
-                <section className="py-20 px-8 text-center space-y-8 border-b border-slate-100">
-                    <div className="space-y-2">
-                        <h2 className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em]">{title || 'Acara Utama'}</h2>
-                        <h3 className="text-3xl font-black text-slate-900">{invitation.event_location_name || content?.location_name || 'Gedung Pernikahan'}</h3>
-                    </div>
-                    <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 space-y-4 text-center">
-                        <p className="text-sm font-bold leading-relaxed">{invitation.event_address || content?.address || 'Jl. Contoh Alamat No. 123, Kota Makassar'}</p>
-                        <p className="text-[10px] font-black text-slate-400 capitalize bg-white inline-block px-4 py-2 rounded-full shadow-sm">{invitation.event_time || content?.time || 'Pukul 10:00 - Selesai'}</p>
-                    </div>
-                    {(invitation.event_maps_url || content?.maps_url) && (
-                        <a href={invitation.event_maps_url || content.maps_url} target="_blank" className="inline-flex items-center gap-2 bg-indigo-600 text-white font-black py-4 px-10 rounded-2xl text-xs uppercase tracking-widest shadow-xl shadow-indigo-100">Buka Maps</a>
-                    )}
-                </section>
-            );
-
-        case 'gallery':
-            return (
-                <section className="py-20 px-4 text-center border-b border-slate-100">
-                    <h2 className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em] mb-12">{title || 'Momen Bahagia'}</h2>
-                    <div className="grid grid-cols-2 gap-3">
-                        {galleries.map((img, i) => (
-                            <div key={img.id || i} className={`rounded-2xl overflow-hidden aspect-[3/4] bg-slate-100 ${i % 3 === 0 ? 'col-span-2 aspect-video' : ''}`}>
-                                <img src={img.image_path} className="w-full h-full object-cover" />
-                            </div>
-                        ))}
-                    </div>
-                </section>
-            );
-
-        case 'rsvp':
-            return <RsvpSection slug={slug} title={invitation.host_names ? `RSVP : ${invitation.host_names}` : title} guest={guest} />;
-
-        case 'wishes':
-        case 'guest_messages':
-            return <WishesSection slug={slug} title={title} messages={messages} guest={guest} />;
-
-        default:
-            return null;
-    }
+function CountdownBox({ value, unit }) {
+    return (
+        <div className="bg-white/5 backdrop-blur-md border border-white/10 p-4 rounded-2xl flex flex-col items-center">
+            <span className="text-2xl font-black leading-none">{value}</span>
+            <span className="text-[8px] font-black uppercase tracking-widest mt-2 text-white/40">{unit}</span>
+        </div>
+    );
 }
 
-function RsvpSection({ slug, title, guest }) {
+function GiftCard({ gift }) {
+    const [copied, setCopied] = useState(false);
+    const copyTxt = () => {
+        navigator.clipboard.writeText(gift.account_number);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    return (
+        <div className="p-8 bg-neutral-50 rounded-[40px] border border-neutral-100 space-y-4">
+             <div className="space-y-1">
+                 <p className="text-[10px] font-black uppercase tracking-widest text-neutral-400">{gift.bank_name}</p>
+                 <h5 className="text-xl font-black">{gift.account_number}</h5>
+                 <p className="text-xs font-bold opacity-60">a.n {gift.account_holder}</p>
+             </div>
+             <button onClick={copyTxt} className={`text-[10px] font-black uppercase tracking-widest px-6 py-3 rounded-full transition-all border ${copied ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-white border-neutral-200 text-neutral-900 hover:bg-neutral-900 hover:text-white'}`}>
+                 {copied ? 'Copied!' : gift.copy_label || 'Salin Nomor'}
+             </button>
+        </div>
+    );
+}
+
+function RsvpSection({ slug, guest }) {
     const { data, setData, post, processing, reset, recentlySuccessful } = useForm({
         name: guest?.name || '',
         attendance_status: 'attending',
@@ -136,63 +313,67 @@ function RsvpSection({ slug, title, guest }) {
     };
 
     return (
-        <section className="py-20 px-8 bg-slate-50 border-b border-slate-100">
-             <div className="text-center mb-12 space-y-2">
-                 <h2 className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em]">{title || 'Konfirmasi Kehadiran'}</h2>
-                 <p className="text-xs font-bold text-slate-400">Berikan kepastian kehadiran Anda.</p>
+        <div className="p-10 bg-neutral-900 text-white rounded-[50px] shadow-2xl relative overflow-hidden">
+             <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16"></div>
+             
+             <div className="text-center mb-10 space-y-2 relative z-10">
+                 <h2 className="text-2xl font-black tracking-tighter">RSVP</h2>
+                 <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Konfirmasi Kehadiran</p>
              </div>
+
              {recentlySuccessful ? (
-                 <div className="p-8 rounded-3xl bg-indigo-600 text-white text-center font-black animate-pulse">Terima Kasih! Konfirmasi Terkirim.</div>
+                 <div className="py-20 text-center font-black animate-pulse text-rose-400">Terima Kasih! Konfirmasi Anda Sudah Terkirim.</div>
              ) : (
-                <form onSubmit={submit} className="space-y-4">
+                <form onSubmit={submit} className="space-y-4 relative z-10">
                     <input 
                         type="text" 
                         placeholder="Nama Lengkap"
                         value={data.name}
                         onChange={e => setData('name', e.target.value)}
-                        className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-indigo-100 outline-none font-bold text-sm disabled:bg-slate-100 disabled:text-slate-400"
+                        className="w-full p-5 rounded-3xl bg-white/10 border border-white/5 focus:bg-white focus:text-neutral-900 outline-none font-bold text-sm transition-all disabled:opacity-50"
                         required
                         disabled={!!guest}
                     />
-                    <select 
-                         value={data.attendance_status}
-                         onChange={e => setData('attendance_status', e.target.value)}
-                         className="w-full p-4 rounded-2xl border border-slate-200 font-bold text-sm"
-                    >
-                         <option value="attending">Hadir</option>
-                         <option value="maybe">Masih Ragu</option>
-                         <option value="not_attending">Tidak Hadir</option>
-                    </select>
-                    <input 
-                        type="number" 
-                        placeholder="Jumlah Tamu"
-                        value={data.guest_count}
-                        onChange={e => setData('guest_count', e.target.value)}
-                        className="w-full p-4 rounded-2xl border border-slate-200 outline-none font-bold text-sm"
-                        min="1" max="10"
-                    />
+                    <div className="grid grid-cols-2 gap-4">
+                        <select 
+                            value={data.attendance_status}
+                            onChange={e => setData('attendance_status', e.target.value)}
+                            className="p-5 rounded-3xl bg-white/10 border border-white/5 font-black text-xs uppercase tracking-widest outline-none appearance-none"
+                        >
+                            <option value="attending" className="text-black">Hadir</option>
+                            <option value="maybe" className="text-black">Ragu</option>
+                            <option value="not_attending" className="text-black">Tidak Hadir</option>
+                        </select>
+                        <input 
+                            type="number" 
+                            placeholder="Jumlah"
+                            value={data.guest_count}
+                            onChange={e => setData('guest_count', e.target.value)}
+                            className="p-5 rounded-3xl bg-white/10 border border-white/5 outline-none font-bold text-sm"
+                            min="1" max="10"
+                        />
+                    </div>
                     <textarea 
-                        placeholder="Catatan kecil (opsional)"
+                        placeholder="Ucapan tambahan (opsional)"
                         value={data.notes}
                         onChange={e => setData('notes', e.target.value)}
-                        className="w-full p-4 rounded-2xl border border-slate-200 outline-none font-bold text-sm h-32"
+                        className="w-full p-5 rounded-3xl bg-white/10 border border-white/5 focus:bg-white focus:text-neutral-900 outline-none font-bold text-sm h-32 transition-all"
                     ></textarea>
                     <button 
                         disabled={processing}
-                        className="w-full bg-indigo-600 text-white font-black py-5 px-6 rounded-2xl text-xs uppercase tracking-widest shadow-xl shadow-indigo-100 active:scale-[0.98] transition-all"
+                        className="w-full bg-white text-neutral-900 font-black py-5 px-6 rounded-3xl text-[10px] uppercase tracking-[0.2em] shadow-2xl active:scale-[0.98] transition-all hover:bg-neutral-100"
                     >
                         Kirim Konfirmasi
                     </button>
                 </form>
              )}
-        </section>
+        </div>
     );
 }
 
-function WishesSection({ slug, title, messages, guest }) {
+function WishesSection({ slug, messages, guest }) {
     const { data, setData, post, processing, reset, recentlySuccessful } = useForm({
         name: guest?.name || '',
-        relation: '',
         message: '',
         invitation_guest_id: guest?.id || null
     });
@@ -200,28 +381,30 @@ function WishesSection({ slug, title, messages, guest }) {
     const submit = (e) => {
         e.preventDefault();
         post(route('invitation.message', slug), {
-            onSuccess: () => reset(),
+            onSuccess: (p) => {
+                reset('message');
+            },
             preserveScroll: true
         });
     };
 
     return (
-        <section className="py-20 px-8 border-b border-slate-100">
-             <div className="text-center mb-12 space-y-2">
-                 <h2 className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em]">{title || 'Ucapan Doa'}</h2>
-                 <p className="text-xs font-bold text-slate-400">Tuliskan pesan manis untuk kami.</p>
+        <div className="space-y-12">
+             <div className="text-center space-y-2">
+                 <h2 className="text-2xl font-black tracking-tighter text-neutral-900 uppercase">Wishes</h2>
+                 <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Ucapan Doa & Harapan</p>
              </div>
              
              {recentlySuccessful ? (
-                  <div className="p-8 rounded-3xl bg-slate-900 text-white text-center font-black mb-12">Ucapan Anda Sudah Terkirim!</div>
+                  <div className="p-10 rounded-[40px] bg-emerald-50 text-emerald-800 text-center font-black animate-in zoom-in duration-500">Ucapan Anda Sudah Terkirim! ✨</div>
              ) : (
-                <form onSubmit={submit} className="mb-12 space-y-4 p-8 rounded-3xl border border-slate-100 bg-white shadow-sm">
+                <form onSubmit={submit} className="space-y-4 p-8 rounded-[40px] border border-neutral-100 bg-neutral-50 shadow-sm">
                     <input 
                         type="text" 
                         placeholder="Nama Anda"
                         value={data.name}
                         onChange={e => setData('name', e.target.value)}
-                        className="w-full p-4 rounded-2xl border border-slate-50 bg-slate-50 focus:bg-white outline-none font-bold text-sm disabled:opacity-50"
+                        className="w-full p-4 rounded-2xl bg-white border border-neutral-100 focus:border-neutral-900 outline-none font-bold text-sm disabled:opacity-60 transition-all"
                         required
                         disabled={!!guest}
                     />
@@ -229,31 +412,35 @@ function WishesSection({ slug, title, messages, guest }) {
                         placeholder="Tulis ucapan & doa..."
                         value={data.message}
                         onChange={e => setData('message', e.target.value)}
-                        className="w-full p-4 rounded-2xl border border-slate-50 bg-slate-50 focus:bg-white outline-none font-bold text-sm h-32"
+                        className="w-full p-4 rounded-2xl bg-white border border-neutral-100 focus:border-neutral-900 outline-none font-bold text-sm h-32 transition-all"
                         required
                     ></textarea>
                     <button 
                         disabled={processing}
-                        className="w-full bg-slate-900 text-white font-black py-4 px-6 rounded-2xl text-xs uppercase tracking-widest shadow-xl shadow-slate-100 active:scale-[0.98] transition-all"
+                        className="w-full bg-neutral-900 text-white font-black py-4 px-6 rounded-2xl text-[10px] uppercase tracking-widest shadow-xl active:scale-[0.98] transition-all"
                     >
-                        Kirim Ucapan
+                        Save Wishes
                     </button>
                 </form>
              )}
 
-             <div className="space-y-6">
+             <div className="space-y-6 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                 {messages.length > 0 ? messages.map((m, i) => (
-                    <div key={m.id || i} className="p-6 rounded-3xl bg-slate-50 space-y-2 border border-slate-100 animate-in slide-in-from-bottom-4 duration-500">
-                        <div className="flex items-center gap-2">
-                             <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-[10px] font-black text-indigo-600 uppercase">{m.name.charAt(0)}</div>
-                             <p className="text-xs font-black text-slate-900">{m.name}</p>
+                    <div key={m.id || i} className="p-8 rounded-[40px] bg-white space-y-4 border border-neutral-100 hover:shadow-lg transition-all duration-500">
+                        <div className="flex items-center gap-3">
+                             <div className="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center text-[10px] font-black text-neutral-900 uppercase">{m.name.charAt(0)}</div>
+                             <div>
+                                <p className="text-xs font-black text-neutral-900">{m.name}</p>
+                                <p className="text-[8px] font-bold text-neutral-400 uppercase tracking-widest">{new Date(m.created_at).toLocaleDateString('id-ID')}</p>
+                             </div>
                         </div>
-                        <p className="text-sm text-slate-600 leading-relaxed font-bold italic">"{m.message}"</p>
+                        <p className="text-sm text-neutral-600 leading-relaxed font-medium italic">"{m.message}"</p>
                     </div>
                 )) : (
-                    <div className="py-12 text-center text-slate-300 text-xs font-bold italic">Belum ada ucapan. Jadilah yang pertama!</div>
+                    <div className="py-20 text-center text-neutral-300 text-xs font-bold italic">Belum ada ucapan. Jadilah yang pertama!</div>
                 )}
              </div>
-        </section>
+        </div>
     );
 }
+

@@ -13,13 +13,19 @@ class InvitationController extends Controller
     {
         $invitation = Invitation::where('slug', $slug)
             ->where('is_published', true)
-            ->with(['template', 'sections' => function($q) {
-                $q->where('is_active', true)->orderBy('order');
-            }, 'galleries' => function($q) {
-                $q->orderBy('order');
-            }, 'guestMessages' => function($q) {
-                $q->where('is_approved', true)->latest();
-            }])
+            ->with([
+                'template', 
+                'schedules', 
+                'giftAccounts' => function($q) {
+                    $q->where('is_active', true);
+                },
+                'galleries' => function($q) {
+                    $q->orderBy('order');
+                }, 
+                'guestMessages' => function($q) {
+                    $q->where('is_approved', true)->latest()->take(50);
+                }
+            ])
             ->firstOrFail();
 
         $guest = null;

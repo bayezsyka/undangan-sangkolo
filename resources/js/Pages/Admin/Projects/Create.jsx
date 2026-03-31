@@ -54,7 +54,10 @@ export default function Create({ auth, clients, can_activate_slot }) {
                                 </div>
 
                                 <div className="space-y-1">
-                                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest pl-1">Pilih Client</label>
+                                    <div className="flex justify-between items-center pr-1">
+                                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest pl-1">Pilih Client</label>
+                                        <Link href={route('clients.create')} className="text-[10px] font-black text-indigo-600 uppercase tracking-widest hover:underline">+ Tambah Client</Link>
+                                    </div>
                                     <select 
                                         value={data.client_id}
                                         onChange={(e) => setData('client_id', e.target.value)}

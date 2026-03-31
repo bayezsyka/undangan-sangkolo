@@ -1,0 +1,18 @@
+import{i as e,n as t,r as n,s as r,t as i}from"./app-rk7thlVY.js";import{a,n as o,r as s}from"./UI-Gmfb8zYr.js";r();var c=i();function l({auth:r}){let{data:i,setData:l,post:d,processing:f,errors:p}=e({name:``,whatsapp:``,email:``,notes:``});return(0,c.jsxs)(a,{user:r.user,children:[(0,c.jsx)(t,{title:`Tambah Client Baru`}),(0,c.jsx)(o,{title:`Registrasi Client`,subtitle:`Daftarkan profil client baru ke dalam basis data Anda.`,actions:(0,c.jsxs)(n,{href:route(`clients.index`),className:`text-sm font-bold text-gray-500 hover:text-gray-900 flex items-center gap-2 transition-all`,children:[(0,c.jsx)(`svg`,{className:`w-4 h-4`,fill:`none`,stroke:`currentColor`,viewBox:`0 0 24 24`,children:(0,c.jsx)(`path`,{strokeLinecap:`round`,strokeLinejoin:`round`,strokeWidth:`2`,d:`M10 19l-7-7m0 0l7-7m-7 7h18`})}),`Batal`]})}),(0,c.jsx)(`div`,{className:`max-w-3xl`,children:(0,c.jsxs)(`form`,{onSubmit:e=>{e.preventDefault(),d(route(`clients.store`))},className:`space-y-8`,children:[(0,c.jsx)(s,{title:`Identitas Client`,children:(0,c.jsxs)(`div`,{className:`grid grid-cols-1 md:grid-cols-2 gap-8`,children:[(0,c.jsxs)(u,{label:`Nama Lengkap Client`,children:[(0,c.jsx)(`input`,{type:`text`,value:i.name,onChange:e=>l(`name`,e.target.value),placeholder:`e.g. Ahmad Fauzan`,className:`w-full input-premium`}),p.name&&(0,c.jsx)(`p`,{className:`text-[10px] text-rose-500 font-black pl-1`,children:p.name})]}),(0,c.jsxs)(u,{label:`Nomor WhatsApp`,children:[(0,c.jsx)(`input`,{type:`text`,value:i.whatsapp,onChange:e=>l(`whatsapp`,e.target.value),placeholder:`081234567890`,className:`w-full input-premium font-black tracking-widest text-emerald-600`}),p.whatsapp&&(0,c.jsx)(`p`,{className:`text-[10px] text-rose-500 font-black pl-1`,children:p.whatsapp})]}),(0,c.jsx)(u,{label:`Alamat Email (Opsional)`,children:(0,c.jsx)(`input`,{type:`email`,value:i.email,onChange:e=>l(`email`,e.target.value),className:`w-full input-premium font-bold text-gray-500`})}),(0,c.jsx)(u,{label:`Catatan Tambahan`,span:2,children:(0,c.jsx)(`textarea`,{rows:`3`,value:i.notes,onChange:e=>l(`notes`,e.target.value),className:`w-full input-premium h-32`,placeholder:`Informasi tambahan tentang client...`})})]})}),(0,c.jsx)(`div`,{className:`flex justify-end`,children:(0,c.jsx)(`button`,{type:`submit`,disabled:f,className:`bg-indigo-600 hover:bg-black text-white font-black py-4 px-12 rounded-[30px] shadow-2xl shadow-indigo-100 transition-all active:scale-[0.98] uppercase tracking-[0.2em] text-[10px]`,children:f?`Menyimpan...`:`Simpan Profil Client`})})]})}),(0,c.jsx)(`style`,{dangerouslySetInnerHTML:{__html:`
+                .input-premium {
+                    background: #fdfdfd;
+                    border: 1px solid #f1f1f4;
+                    border-radius: 20px;
+                    padding: 12px 20px;
+                    font-size: 13px;
+                    font-weight: 700;
+                    color: #1a1a1b;
+                    transition: all 0.3s ease;
+                    outline: none;
+                }
+                .input-premium:focus {
+                    background: #fff;
+                    border-color: #4f46e5;
+                    box-shadow: 0 0 0 5px #4f46e510;
+                }
+            `}})]})}function u({label:e,children:t,span:n=1}){return(0,c.jsxs)(`div`,{className:`space-y-2 ${n===2?`md:col-span-2`:``}`,children:[(0,c.jsx)(`label`,{className:`text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1 leading-none`,children:e}),t]})}export{l as default};

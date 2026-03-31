@@ -64,16 +64,17 @@ export default function Index({ auth, templates }) {
                             <div className="flex items-center gap-3 pt-6 border-t border-gray-50">
                                 <Link 
                                     href={route('templates.edit', template.id)}
-                                    className="flex-1 bg-gray-50 hover:bg-indigo-50 text-gray-700 hover:text-indigo-600 font-bold py-3 px-4 rounded-xl text-center text-xs transition-all uppercase tracking-wider"
+                                    className="flex-1 bg-white hover:bg-gray-50 text-gray-500 hover:text-gray-900 border border-gray-100 font-bold py-3 px-4 rounded-xl text-center text-[10px] transition-all uppercase tracking-[0.15em]"
                                 >
-                                    Edit Template
+                                    Konfigurasi
                                 </Link>
                                 <a 
                                     href={template.preview_url} 
                                     target="_blank"
-                                    className="p-3 bg-gray-50 text-gray-400 hover:text-indigo-600 rounded-xl transition-all"
+                                    className="flex-[1.5] bg-indigo-600 hover:bg-black text-white font-black py-3 px-6 rounded-xl text-center text-[10px] transition-all uppercase tracking-[0.2em] shadow-lg shadow-indigo-100 flex items-center justify-center gap-2"
                                 >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                    LIHAT DESIGN
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                                 </a>
                             </div>
                         </div>
