@@ -1,0 +1,202 @@
+{
+  "_UI-Gmfb8zYr.js": {
+    "file": "assets/UI-Gmfb8zYr.js",
+    "name": "UI",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-BejXTZA1.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/Pages/Admin/Clients/Create.jsx": {
+    "file": "assets/Create-B-5IpzQ_.js",
+    "name": "Create",
+    "src": "resources/js/Pages/Admin/Clients/Create.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UI-Gmfb8zYr.js"
+    ]
+  },
+  "resources/js/Pages/Admin/Clients/Index.jsx": {
+    "file": "assets/Index-Nvd5IUfM.js",
+    "name": "Index",
+    "src": "resources/js/Pages/Admin/Clients/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UI-Gmfb8zYr.js"
+    ]
+  },
+  "resources/js/Pages/Admin/Dashboard.jsx": {
+    "file": "assets/Dashboard-BasfsbTd.js",
+    "name": "Dashboard",
+    "src": "resources/js/Pages/Admin/Dashboard.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UI-Gmfb8zYr.js"
+    ]
+  },
+  "resources/js/Pages/Admin/Projects/Create.jsx": {
+    "file": "assets/Create-DSEoduxt.js",
+    "name": "Create",
+    "src": "resources/js/Pages/Admin/Projects/Create.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UI-Gmfb8zYr.js"
+    ]
+  },
+  "resources/js/Pages/Admin/Projects/Edit.jsx": {
+    "file": "assets/Edit-0PEQ-xBC.js",
+    "name": "Edit",
+    "src": "resources/js/Pages/Admin/Projects/Edit.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UI-Gmfb8zYr.js"
+    ]
+  },
+  "resources/js/Pages/Admin/Projects/Guests/Index.jsx": {
+    "file": "assets/Index-DYN2AuCy.js",
+    "name": "Index",
+    "src": "resources/js/Pages/Admin/Projects/Guests/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UI-Gmfb8zYr.js"
+    ]
+  },
+  "resources/js/Pages/Admin/Projects/Index.jsx": {
+    "file": "assets/Index-C8MgBE69.js",
+    "name": "Index",
+    "src": "resources/js/Pages/Admin/Projects/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UI-Gmfb8zYr.js"
+    ]
+  },
+  "resources/js/Pages/Admin/Projects/Show.jsx": {
+    "file": "assets/Show-DMfw2dE2.js",
+    "name": "Show",
+    "src": "resources/js/Pages/Admin/Projects/Show.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UI-Gmfb8zYr.js"
+    ]
+  },
+  "resources/js/Pages/Admin/RSVP/Index.jsx": {
+    "file": "assets/Index-BtiJbPnt.js",
+    "name": "Index",
+    "src": "resources/js/Pages/Admin/RSVP/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UI-Gmfb8zYr.js"
+    ]
+  },
+  "resources/js/Pages/Admin/Settings/Index.jsx": {
+    "file": "assets/Index-CgAi3izX.js",
+    "name": "Index",
+    "src": "resources/js/Pages/Admin/Settings/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UI-Gmfb8zYr.js"
+    ]
+  },
+  "resources/js/Pages/Admin/Templates/Create.jsx": {
+    "file": "assets/Create-_j0HPABu.js",
+    "name": "Create",
+    "src": "resources/js/Pages/Admin/Templates/Create.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UI-Gmfb8zYr.js"
+    ]
+  },
+  "resources/js/Pages/Admin/Templates/Edit.jsx": {
+    "file": "assets/Edit-Dz2fwHYA.js",
+    "name": "Edit",
+    "src": "resources/js/Pages/Admin/Templates/Edit.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UI-Gmfb8zYr.js"
+    ]
+  },
+  "resources/js/Pages/Admin/Templates/Index.jsx": {
+    "file": "assets/Index-C2sYtiJV.js",
+    "name": "Index",
+    "src": "resources/js/Pages/Admin/Templates/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UI-Gmfb8zYr.js"
+    ]
+  },
+  "resources/js/Pages/Auth/Login.jsx": {
+    "file": "assets/Login-DfohynDq.js",
+    "name": "Login",
+    "src": "resources/js/Pages/Auth/Login.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/Pages/Public/Invitation/Show.jsx": {
+    "file": "assets/Show-CMjFYzxf.js",
+    "name": "Show",
+    "src": "resources/js/Pages/Public/Invitation/Show.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/Pages/Welcome.jsx": {
+    "file": "assets/Welcome-DgnabCpv.js",
+    "name": "Welcome",
+    "src": "resources/js/Pages/Welcome.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app.jsx": {
+    "file": "assets/app-rk7thlVY.js",
+    "name": "app",
+    "src": "resources/js/app.jsx",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/Pages/Admin/Clients/Create.jsx",
+      "resources/js/Pages/Admin/Clients/Index.jsx",
+      "resources/js/Pages/Admin/Dashboard.jsx",
+      "resources/js/Pages/Admin/Projects/Create.jsx",
+      "resources/js/Pages/Admin/Projects/Edit.jsx",
+      "resources/js/Pages/Admin/Projects/Guests/Index.jsx",
+      "resources/js/Pages/Admin/Projects/Index.jsx",
+      "resources/js/Pages/Admin/Projects/Show.jsx",
+      "resources/js/Pages/Admin/RSVP/Index.jsx",
+      "resources/js/Pages/Admin/Settings/Index.jsx",
+      "resources/js/Pages/Admin/Templates/Create.jsx",
+      "resources/js/Pages/Admin/Templates/Edit.jsx",
+      "resources/js/Pages/Admin/Templates/Index.jsx",
+      "resources/js/Pages/Auth/Login.jsx",
+      "resources/js/Pages/Public/Invitation/Show.jsx",
+      "resources/js/Pages/Welcome.jsx"
+    ],
+    "css": [
+      "assets/app-BejXTZA1.css"
+    ]
+  }
+}
